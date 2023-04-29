@@ -1,0 +1,223 @@
+package it.polimi.tiw.projects.dao;
+
+import java.sql.Connection;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import it.polimi.tiw.projects.beans.Item;
+
+
+public class ItemDAO {
+
+	private Connection con;
+	
+	private static final String SELECT_ITEM_BY_ID = "SELECT * from Item where itemID=? ";
+	private static final String INSERT_ITEM_SQL = "INSERT into Item(itemName,description,itemPrice,isSold,imagePath)"
+													+ "VALUES(?,?,?,?,?)"; //去掉了itemID
+	private static final String UPDATE_ITEM_STATE = "UPDATE Item SET isSold = ?"
+													+ "WHERE itemID = ?";
+	private static final String SELECT_ITEM_BY_STATUS ="select* from Item where isSold = ?";
+	private static final String SELECT_ITEM_BY_KEYWORD = "SELECT * FROM Item WHERE itemName LIKE ? OR description LIKE ? AND isSold=?";
+	//SELECT * FROM Item WHERE itemName LIKE '%iphone%' OR description LIKE '%iphone%';
+	
+	private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID="Select itemID from auc_item where aucID =?";
+	
+	public ItemDAO(Connection connection ) {
+		this.con=connection;
+		
+	}
+	
+	
+	public Item findItem(int i) throws SQLException {
+		Item item = null;
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_ID)){
+			pstatement.setInt(1, i);
+			try(ResultSet result = pstatement.executeQuery();){
+				if(result.next()) {
+					item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDesc(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					
+				}
+				
+			}
+		}
+		return item;
+	}
+	
+	public List<Item> findItem(List<Integer> itemIDs) throws SQLException{
+		List<Item> items = null;
+		Item item = null;
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_ID)){
+			for(int i=0; i < itemIDs.size(); i++) {
+				pstatement.setInt(1, itemIDs.get(i));
+				try(ResultSet result = pstatement.executeQuery();){
+					while(result.next()) {
+						item = new Item();
+						item.setItemID(result.getInt("itemID"));
+						item.setItemName(result.getString("itemName"));
+						item.setDesc(result.getString("description"));
+						item.setItemPrice(result.getFloat("itemPrice"));
+						item.setSold(result.getBoolean("isSold"));
+						item.setImagePath(result.getString("imagePath"));
+						items.add(item);
+					}
+				}
+			}
+		}
+		return items;
+		
+	}
+	
+	
+	public void createItem (Item item) throws SQLException {
+		
+		try(PreparedStatement pstatement = con.prepareStatement(INSERT_ITEM_SQL);){
+			//pstatement.setInt(1, id); itemID autogenerato da DB
+			pstatement.setString(1, item.getItemName());
+			pstatement.setString(2, item.getDesc());
+			pstatement.setFloat(3, item.getItemPrice() );
+			pstatement.setBoolean(4, item.isSold());
+			pstatement.setString(5, item.getDesc());
+			pstatement.executeUpdate();
+			
+		}
+	}
+	
+	public boolean updateItemState (Item item) throws SQLException {
+		boolean isSold = true;
+		boolean rowUpdated;
+		try(PreparedStatement pstatement = con.prepareStatement(UPDATE_ITEM_STATE);){
+			pstatement.setBoolean(1,isSold);
+			pstatement.setInt(2, item.getItemID());
+			//if succeed will be true, if failed will be false  
+			rowUpdated = pstatement.executeUpdate()>0;
+			
+		}
+		
+		
+		return rowUpdated;
+		
+	}
+	
+	/**
+	 * find all  unsold item
+	 * @return
+	 * @throws SQLException 
+	 */
+	
+	public List<Item> findAllItemUnSold() throws SQLException{
+		List<Item> unSoldItems = new ArrayList<Item>();
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_STATUS);){
+			pstatement.setBoolean(1, false);
+			try(ResultSet result = pstatement.executeQuery();){
+				while(result.next()) {
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDesc(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					unSoldItems.add(item);
+				}
+				
+			}
+		}
+		return unSoldItems;
+		
+	}
+	
+	/**
+	 * find product with specific keyword
+	 * this methods return all the itemID that contains keyword
+	 * @return List<Integer>
+	 * @throws SQLException 
+	 */
+	public List<Item> findItemWithKeyWord(String keyword) throws SQLException{
+		List<Item> itemIDs = new ArrayList<Item>();
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_KEYWORD);){
+			pstatement.setString(1, "%"+keyword+"%");
+			pstatement.setString(2,"%"+keyword+"%");
+			pstatement.setBoolean(3, false);
+			try(ResultSet result = pstatement.executeQuery();){
+				while(result.next()) {
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDesc(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					itemIDs.add(item);
+				}	
+			}
+		}
+		
+		
+		return itemIDs;
+		
+	}
+	
+	public List<Integer> findItem_ID_WithKeyWord(String keyword) throws SQLException{
+		List<Integer> itemIDs = new ArrayList<Integer>();
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_KEYWORD);){
+			pstatement.setString(1, "%"+keyword+"%");
+			pstatement.setString(2,"%"+keyword+"%");
+			pstatement.setBoolean(3, false);
+			try(ResultSet result = pstatement.executeQuery();){
+				while(result.next()) {
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDesc(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					itemIDs.add(item.getItemID());
+				}	
+			}
+		}
+		
+		
+		return itemIDs;
+		
+	}
+	
+	/**
+	 * with specific aucID it returns all the item's id of that auction using table auc_item
+	 * @param aucID
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Integer> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
+		List<Integer> itemIDs = new ArrayList<Integer>();
+		
+		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){
+			pstatement.setInt(0, aucID);
+			try(ResultSet result = pstatement .executeQuery();){
+				while(result.next()) {
+					int i = result.getInt("itemID");
+					itemIDs.add(i);
+				}
+			}
+		}
+		
+		
+		
+		return itemIDs;
+	
+		
+	}
+	
+	
+	
+}	

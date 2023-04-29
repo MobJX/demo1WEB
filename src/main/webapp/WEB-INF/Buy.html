@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Shopping Page</title>
+<h1>Let's BUY BUY BUY !!!</h1>
+<body>
+<!-- 通过KEYWORD搜索物品 -->
+  <!-- 使用form 来建立一个表格 action指定表单会发送给哪个servlet-->
+  <!-- 使用get 将关键字作为查询字符参数附加到URL上 -->
+<form action="FindItemWithKeyword" method = "GET">
+  <label for="search">Search Item!:</label>
+  <!-- 建立输入框 -->
+  <input type="text" id="keyword" name="keyword" required>
+   <!-- 使用一个按钮来确认 -->
+  <button type="submit">confirm</button>
+</form>
+
+
+<form action="GetAuctionDetails" method = "GET">
+  <label for="search">Search Auction!:</label>
+  <!-- 建立输入框 -->
+  <input type="text" id="aucID" name="aucID">
+   <!-- 使用一个按钮来确认 -->
+  <button type="submit">confirm</button>
+</form>
+	
+	
+	
+	<form method="post" action="Logout">
+        <input type="submit" value="Logout"/>
+    </form>
+
+ 
+ 
+	
+	<h1>Auction details </h1>
+	<div th:if="${KeywordAuctions.size() >0}">
+		<table>
+			<thead>
+				<tr>
+ 					<td>AuctionID</td><td>OwnerID </td> <td>Price </td><td>MinUp </td> <td>ExpiryDayTime</td> <td>IsClosedStatus</td>
+ 				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="m : ${KeywordAuctions}">
+					<td th:text="${m.aucID}"></td>
+					<td th:text="${m.ownerID}"></td>
+					<td th:text="${m.aucPrice}"></td>
+					<td th:text="${m.minUP}"></td>
+					<td th:text="${m.expiryDateTime}"></td>
+					<td th:text="${m.isClosed}"></td>
+					<td><a th:href="@{/GetAuctionDetails(aucID=${m.aucID})}">Details</a></td>
+					<td><a th:href="@{/GoToOfferDetailsPage}">Go</a></td> <!-- TESTING  -->>
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>  
+	
+	
+	
+	
+	
+</body>
+</html>

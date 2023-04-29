@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Offer</title>
+</head>
+<body>
+	<h1>Items details</h1>
+	<a th:href="@{/Home}">Back to home</a>
+	<p th:text=" ${num }"></p>
+	
+	<table>
+  <thead>
+    <tr>
+      <th>Item ID</th>
+      <th>Item Name</th>
+      <th>Item Description</th>
+      <th>Starting Price</th>
+      <th>Item Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="item : ${items}">
+      <td th:text="${item.itemID}"></td>
+      <td th:text="${item.itemName}"></td>
+      <td th:text="${item.description}"></td>
+      <td th:text="${item.itemPrice}"></td>
+      <td th:text="${item.isSold}"></td>
+    </tr>
+  </tbody>
+</table>
+
+	
+	
+	
+	
+	
+
+</body>
+</html>
