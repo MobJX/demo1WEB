@@ -27,16 +27,16 @@ import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
-//不知为何 在buy界面点连接后 无法跳转到OfferDetails 页面 一片空白 问问老师
 
 
-@WebServlet("/GetAuctionDetails")
-public class GetAuctionDetails extends HttpServlet {
+
+@WebServlet("/GetAuctionItemDetails")
+public class GetAuctionItemDetails extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
 
-	public GetAuctionDetails() {
+	public GetAuctionItemDetails() {
 		super();
 	}
 
@@ -78,37 +78,39 @@ public class GetAuctionDetails extends HttpServlet {
 		AuctionDAO auctionDAO = new AuctionDAO(connection);
 		ItemDAO itemDAO = new ItemDAO(connection);
 		Auction auction = null;
+		Item item = null;
 		List<Integer> allItemID = new ArrayList<Integer>();
 		List<Item> itemsOfAuction = new ArrayList<Item>();
+		System.out.println("this is itemsOfAuction size 1: "+itemsOfAuction.size());
 		
 		try {
 			//verify that auction exists or not
 			auction = auctionDAO.findAuction(aucID);
-			
+			System.out.println("this is itemsOfAuction size 2 :"+itemsOfAuction.size());
 			if (auction == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
 				return;
 			}
-			
 			//find all Id of item in this auction 
+			
 			allItemID = itemDAO.findAll_ItemID_OfAuction(aucID);
+			System.out.println("this is itemsOfAuction size 3 :"+itemsOfAuction.size());
+			
 		
 			if (allItemID == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Item ID of AUCTION Resource not found");
 				return;
 			}
 			
-			//for	(int i = 0; i < allItemID.size();i++) {
-				//Item item = new Item();
-				//item = itemDAO.findItem(allItemID.get(i));
-				//itemsOfAuction.add(item);
-			//}
-			itemsOfAuction = itemDAO.findItem(allItemID);
-			if (itemsOfAuction == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND, "items Resource not found");
-				return;
-			}
-
+			for	(int i = 0; i < allItemID.size();i++) {
+			//item = new Item();
+			item = itemDAO.findItem(allItemID.get(i));
+			itemsOfAuction.add(item);
+		}
+			
+			
+			
+		
 		
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -123,7 +125,7 @@ public class GetAuctionDetails extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("items", itemsOfAuction);
-		ctx.setVariable("num", 100);
+		
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		

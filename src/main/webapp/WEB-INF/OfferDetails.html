@@ -7,7 +7,8 @@
 <body>
 	<h1>Items details</h1>
 	<a th:href="@{/Home}">Back to home</a>
-	<p th:text=" ${num }"></p>
+	<br>
+	<a th:href="@{/BuyPage}">Back to BuyPage</a>
 	
 	<table>
   <thead>
@@ -20,21 +21,18 @@
     </tr>
   </thead>
   <tbody>
-    <tr th:each="item : ${items}">
+   
+     <tr th:each="item : ${items}">
       <td th:text="${item.itemID}"></td>
       <td th:text="${item.itemName}"></td>
       <td th:text="${item.description}"></td>
       <td th:text="${item.itemPrice}"></td>
       <td th:text="${item.isSold}"></td>
     </tr>
+      
   </tbody>
 </table>
 
-	
-	
-	
-	
-	
 
 </body>
 </html>

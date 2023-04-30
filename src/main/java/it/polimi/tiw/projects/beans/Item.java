@@ -39,12 +39,12 @@ public class Item {
 		this.itemName = itemName;
 	}
 
-	public String getDesc() {
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDesc(String desc) {
-		this.description = desc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public float getItemPrice() {
@@ -70,6 +70,8 @@ public class Item {
 	public void setSold(boolean isSold) {
 		this.isSold = isSold;
 	}
+
+	
 	
 	
 

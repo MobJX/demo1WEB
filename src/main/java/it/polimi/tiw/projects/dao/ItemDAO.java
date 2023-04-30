@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import it.polimi.tiw.projects.beans.Item;
 
 
@@ -24,7 +26,12 @@ public class ItemDAO {
 	private static final String SELECT_ITEM_BY_KEYWORD = "SELECT * FROM Item WHERE itemName LIKE ? OR description LIKE ? AND isSold=?";
 	//SELECT * FROM Item WHERE itemName LIKE '%iphone%' OR description LIKE '%iphone%';
 	
-	private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID="Select itemID from auc_item where aucID =?";
+	//private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID="Select itemID from auc_item where aucID =?";
+	
+	private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID ="SELECT * FROM Item WHERE  itemID in (SELECT itemID FROM auc_item  WHERE aucID =?)";
+           
+	
+	
 	
 	public ItemDAO(Connection connection ) {
 		this.con=connection;
@@ -41,7 +48,7 @@ public class ItemDAO {
 					item = new Item();
 					item.setItemID(result.getInt("itemID"));
 					item.setItemName(result.getString("itemName"));
-					item.setDesc(result.getString("description"));
+					item.setDescription(result.getString("description"));
 					item.setItemPrice(result.getFloat("itemPrice"));
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
@@ -54,7 +61,7 @@ public class ItemDAO {
 	}
 	
 	public List<Item> findItem(List<Integer> itemIDs) throws SQLException{
-		List<Item> items = null;
+		List<Item> items = new ArrayList<Item>();
 		Item item = null;
 		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_BY_ID)){
 			for(int i=0; i < itemIDs.size(); i++) {
@@ -64,7 +71,7 @@ public class ItemDAO {
 						item = new Item();
 						item.setItemID(result.getInt("itemID"));
 						item.setItemName(result.getString("itemName"));
-						item.setDesc(result.getString("description"));
+						item.setDescription(result.getString("description"));
 						item.setItemPrice(result.getFloat("itemPrice"));
 						item.setSold(result.getBoolean("isSold"));
 						item.setImagePath(result.getString("imagePath"));
@@ -83,10 +90,10 @@ public class ItemDAO {
 		try(PreparedStatement pstatement = con.prepareStatement(INSERT_ITEM_SQL);){
 			//pstatement.setInt(1, id); itemID autogenerato da DB
 			pstatement.setString(1, item.getItemName());
-			pstatement.setString(2, item.getDesc());
+			pstatement.setString(2, item.getDescription());
 			pstatement.setFloat(3, item.getItemPrice() );
 			pstatement.setBoolean(4, item.isSold());
-			pstatement.setString(5, item.getDesc());
+			pstatement.setString(5, item.getDescription());
 			pstatement.executeUpdate();
 			
 		}
@@ -123,7 +130,7 @@ public class ItemDAO {
 					Item item = new Item();
 					item.setItemID(result.getInt("itemID"));
 					item.setItemName(result.getString("itemName"));
-					item.setDesc(result.getString("description"));
+					item.setDescription(result.getString("description"));
 					item.setItemPrice(result.getFloat("itemPrice"));
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
@@ -153,7 +160,7 @@ public class ItemDAO {
 					Item item = new Item();
 					item.setItemID(result.getInt("itemID"));
 					item.setItemName(result.getString("itemName"));
-					item.setDesc(result.getString("description"));
+					item.setDescription(result.getString("description"));
 					item.setItemPrice(result.getFloat("itemPrice"));
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
@@ -178,7 +185,7 @@ public class ItemDAO {
 					Item item = new Item();
 					item.setItemID(result.getInt("itemID"));
 					item.setItemName(result.getString("itemName"));
-					item.setDesc(result.getString("description"));
+					item.setDescription(result.getString("description"));
 					item.setItemPrice(result.getFloat("itemPrice"));
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
@@ -199,21 +206,31 @@ public class ItemDAO {
 	 * @throws SQLException
 	 */
 	public List<Integer> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
-		List<Integer> itemIDs = new ArrayList<Integer>();
+		List<Integer> IDs = new ArrayList<Integer>();
 		
 		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){
-			pstatement.setInt(0, aucID);
+			// 需要将 pstatement.setInt(0, aucID); 改为 pstatement.setInt(1, aucID);。这是因为 PreparedStatement 中参数的索引从 1 开始而不是从 0 开始
+			//pstatement.setInt(0, aucID); ERRORE!!!!!!
+			pstatement.setInt(1, aucID);
 			try(ResultSet result = pstatement .executeQuery();){
 				while(result.next()) {
-					int i = result.getInt("itemID");
-					itemIDs.add(i);
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDescription(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					
+				IDs.add(item.getItemID());
+				
 				}
 			}
 		}
 		
 		
 		
-		return itemIDs;
+		return IDs;
 	
 		
 	}
