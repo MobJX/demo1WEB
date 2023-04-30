@@ -274,6 +274,12 @@ public class AuctionDAO {
 	}
 	
 	
+	/**
+	 * it will return the max bid of specific auction
+	 * @param auctionId
+	 * @return
+	 * @throws SQLException
+	 */
 	public float getCurrentMaxBid(int auctionId) throws SQLException {
 	    float currentMaxBid = 0;
 	    String query = "SELECT MAX(offerPrice) as currentMaxBid FROM Offer WHERE aucID = ?";

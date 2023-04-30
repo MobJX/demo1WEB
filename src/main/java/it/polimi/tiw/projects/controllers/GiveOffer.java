@@ -76,6 +76,8 @@ public class GiveOffer extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        //获取minUP
+        //检查是否符合！
         float minUp = auction.getMinUP();
         if (userBid <= currentMaxBid + minUp) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Your bid must be greater than current highest offer plus the minimum increase.");
@@ -111,7 +113,8 @@ public class GiveOffer extends HttpServlet {
         }
 
         
-
+        // regenerate info of items!
+        // show the items info 
         ItemDAO itemDAO = new ItemDAO(connection);
 		Item item = null;
 		List<Integer> allItemID = new ArrayList<Integer>();
@@ -149,7 +152,7 @@ public class GiveOffer extends HttpServlet {
 		// 添加更新后的拍卖和报价信息到上下文中
         ctx.setVariable("auction", auction);
         ctx.setVariable("offers", offers);
-        ctx.setVariable("items", itemsOfAuction);
+       ctx.setVariable("items", itemsOfAuction);
         
 		templateEngine.process(path, ctx, response.getWriter());
 		
@@ -160,6 +163,7 @@ public class GiveOffer extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
+    
     
     
     public void destroy() {
