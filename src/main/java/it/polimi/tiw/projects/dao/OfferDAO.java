@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import it.polimi.tiw.projects.beans.Auction;
@@ -26,7 +27,7 @@ public class OfferDAO {
 	private static final String SELECT_OFFER_BY_ID = "SELECT * FROM Offer WHERE offerID=? ";
 	private static final String INSERT_OFFER_SQL = "INSERT INTO Offer(userID,aucID,offerPrice,offerDayTime)"
 													+ "VALUES(?,?,?,?)"; //去掉了offerID
-	private static final String SELECT_OFFER_BY_AUCID ="select* from Offer where aucID = ?";
+	private static final String SELECT_OFFER_BY_AUCID ="select* from Offer where aucID = ? ORDER BY offerDayTime DESC";
 	
 	public Offer findOffer(int i) throws SQLException {
 		
@@ -57,11 +58,15 @@ public class OfferDAO {
 	public void createOffer(Offer offer ) throws SQLException { 
 		
 		try(PreparedStatement pstatement = con.prepareStatement(INSERT_OFFER_SQL);){
-		
-			pstatement.setInt(1, offer.getAucID());
-			pstatement.setFloat(2, offer.getOfferPrice());
-			pstatement.setTimestamp(4, new Timestamp(offer.getOfferDayTime().getTime()));
-			pstatement.executeUpdate();
+				pstatement.setInt(1, offer.getUserID());
+				pstatement.setInt(2, offer.getAucID());
+		        pstatement.setFloat(3, offer.getOfferPrice());
+		        Date currentTime = new Date();
+		        Timestamp currentTimestamp = new Timestamp(currentTime.getTime());
+		        pstatement.setTimestamp(4, currentTimestamp);
+		       // pstatement.setTimestamp(4, new Timestamp(offer.getOfferDayTime().getTime()));
+		        
+		        pstatement.executeUpdate();
 		}
 		
 		
@@ -103,7 +108,7 @@ public class OfferDAO {
 					offer.setUserID(result.getInt("userID"));
 					offer.setAucID(result.getInt("aucID"));
 					offer.setOfferPrice(result.getFloat("offerPrice"));
-					offer.setOfferDayTime(result.getDate("offerDayTime"));
+					offer.setOfferDayTime(result.getTimestamp("offerDayTime"));
 					//adding offer to list
 					offers.add(offer);
 					

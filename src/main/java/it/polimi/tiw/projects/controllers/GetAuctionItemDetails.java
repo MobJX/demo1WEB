@@ -22,9 +22,11 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
+import it.polimi.tiw.projects.beans.Offer;
 import it.polimi.tiw.projects.beans.User;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
+import it.polimi.tiw.projects.dao.OfferDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 
@@ -76,17 +78,20 @@ public class GetAuctionItemDetails extends HttpServlet {
 
 	
 		AuctionDAO auctionDAO = new AuctionDAO(connection);
-		ItemDAO itemDAO = new ItemDAO(connection);
 		Auction auction = null;
+		ItemDAO itemDAO = new ItemDAO(connection);
 		Item item = null;
 		List<Integer> allItemID = new ArrayList<Integer>();
 		List<Item> itemsOfAuction = new ArrayList<Item>();
-		System.out.println("this is itemsOfAuction size 1: "+itemsOfAuction.size());
+		
+		OfferDAO offerDAO = new OfferDAO(connection);
+		List<Offer> offers = null;
+		
 		
 		try {
 			//verify that auction exists or not
 			auction = auctionDAO.findAuction(aucID);
-			System.out.println("this is itemsOfAuction size 2 :"+itemsOfAuction.size());
+			
 			if (auction == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
 				return;
@@ -94,7 +99,8 @@ public class GetAuctionItemDetails extends HttpServlet {
 			//find all Id of item in this auction 
 			
 			allItemID = itemDAO.findAll_ItemID_OfAuction(aucID);
-			System.out.println("this is itemsOfAuction size 3 :"+itemsOfAuction.size());
+			
+			offers = offerDAO.findAllOfferOfAuction(auction);
 			
 		
 			if (allItemID == null) {
@@ -106,12 +112,8 @@ public class GetAuctionItemDetails extends HttpServlet {
 			//item = new Item();
 			item = itemDAO.findItem(allItemID.get(i));
 			itemsOfAuction.add(item);
-		}
-			
-			
-			
-		
-		
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			//response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover mission");
@@ -124,8 +126,10 @@ public class GetAuctionItemDetails extends HttpServlet {
 		String path = "/WEB-INF/OfferDetails.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("auction",auction);
+		ctx.setVariable("auctionID", aucID);
 		ctx.setVariable("items", itemsOfAuction);
-		
+		ctx.setVariable("offers", offers);
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		

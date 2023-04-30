@@ -1,6 +1,6 @@
 package it.polimi.tiw.projects.controllers;
 
-
+//for test use this servlet could be delete
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;

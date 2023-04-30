@@ -274,6 +274,21 @@ public class AuctionDAO {
 	}
 	
 	
+	public float getCurrentMaxBid(int auctionId) throws SQLException {
+	    float currentMaxBid = 0;
+	    String query = "SELECT MAX(offerPrice) as currentMaxBid FROM Offer WHERE aucID = ?";
+	    try (PreparedStatement pstatement = con.prepareStatement(query)) {
+	        pstatement.setInt(1, auctionId);
+	        try (ResultSet result = pstatement.executeQuery()) {
+	            if (result.next()) {
+	                currentMaxBid = result.getFloat("currentMaxBid");
+	            }
+	        }
+	    }
+	    return currentMaxBid;
+	}
+
+	
 
 	
 
