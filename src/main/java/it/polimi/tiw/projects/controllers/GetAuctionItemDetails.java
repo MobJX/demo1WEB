@@ -24,9 +24,11 @@ import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
 import it.polimi.tiw.projects.beans.Offer;
 import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.dao.OfferDAO;
+import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 
@@ -55,7 +57,8 @@ public class GetAuctionItemDetails extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		
+		
 		// If the user is not logged in (not present in session) redirect to the login
 		String loginpath = getServletContext().getContextPath() + "/index.html";
 		HttpSession session = request.getSession();
@@ -64,6 +67,7 @@ public class GetAuctionItemDetails extends HttpServlet {
 			return;
 		}
 		
+        User user = (User) session.getAttribute("user");
 
 		// get and check params
 		Integer aucID = null;
@@ -120,6 +124,31 @@ public class GetAuctionItemDetails extends HttpServlet {
 			return;
 		}
 		
+		//find all info of auction tha won by the user
+		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+		List<WonAuction> wonAuctions = new ArrayList<>();
+		
+		try {
+			wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		// Redirect to the OfferDetail page and add auction to the parameters
@@ -130,6 +159,7 @@ public class GetAuctionItemDetails extends HttpServlet {
 		//ctx.setVariable("auctionID", aucID);
 		ctx.setVariable("items", itemsOfAuction);
 		ctx.setVariable("offers", offers);
+		ctx.setVariable("wonAuctions", wonAuctions);
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		

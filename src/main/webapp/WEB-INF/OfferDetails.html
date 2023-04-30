@@ -74,6 +74,28 @@
 </form>
 
 
+<h2>My Won Auctions</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Auction ID</th>
+            <th>Auction Price</th>
+            <th>Final Price</th>
+            <th>Expiry Date Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="auction : ${wonAuctions}">
+            <td th:text="${auction.aucID}"></td>
+            <td th:text="${auction.aucPrice}"></td>
+            <td th:text="${auction.finalPrice}"></td>
+            <td th:text="${auction.expiryDateTime}"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
 
 </body>
 </html>
