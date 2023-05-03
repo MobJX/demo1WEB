@@ -69,31 +69,22 @@ public class GetOfferOfAuction extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
-		System.out.println("Starting offer 1 ");//
+		
 	
 		OfferDAO offerDAO = new OfferDAO(connection);
 		List<Offer> offers = null;
 		AuctionDAO auctionDAO = new AuctionDAO(connection);
 		Auction auction = null;
-		System.out.println("Starting offer 2 ");//
+		
 		try {
 			//verify that auction exists or not
 			auction = auctionDAO.findAuction(aucID);
-			System.out.println("This is auctionID :"+auction.getAucID());
+			//System.out.println("This is auctionID :"+auction.getAucID());
 			
-			System.out.println("Starting offer 3 ");//
-			if (auction == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Auction Resource not found");
-				return;
-			}
-			System.out.println("Starting offer 4 ");//
+			
 			//find all offer of this  auction 
 			offers = offerDAO.findAllOfferOfAuction(auction); 
-			System.out.println("This is Offer :"+offers.get(0).getOfferID());
-			if (offers == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Offer Resource not found");
-				return;
-			}
+			//System.out.println("This is Offer :"+offers.get(0).getOfferID());
 
 		} catch (SQLException e) {
 			e.printStackTrace();

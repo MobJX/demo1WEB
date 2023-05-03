@@ -59,6 +59,7 @@ public class GoToBuyPage extends HttpServlet {
 		String path = "/WEB-INF/Buy.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
