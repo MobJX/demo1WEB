@@ -67,7 +67,7 @@
 
 
 <form action="#" method="get" th:action="@{/GiveOffer}">
-<input type="hidden" name="auctionID" th:value="${auctionID}">
+<input type="hidden" name="auctionID" th:value="${auction.aucID}">
     <label for="offerInput">Enter your offer:</label>
     <input type="number" id="offerInput" name="offer" required>
     <input type="submit" value="Submit">
@@ -85,10 +85,10 @@
         </tr>
     </thead>
     <tbody>
-        <tr th:each="auction : ${wonAuctions}">
-            <td th:text="${auction.aucID}"></td>
-            <td th:text="${auction.aucPrice}"></td>
-            <td th:text="${auction.finalPrice}"></td>
+        <tr th:each="wonAuction : ${wonAuctions}">
+            <td th:text="${wonAuction.aucID}"></td>
+            <td th:text="${wonAuction.aucPrice}"></td>
+            <td th:text="${wonAuction.winningBid}"></td>
             <td th:text="${auction.expiryDateTime}"></td>
         </tr>
     </tbody>

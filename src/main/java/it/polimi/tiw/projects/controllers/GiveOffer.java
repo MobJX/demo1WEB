@@ -23,9 +23,11 @@ import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
 import it.polimi.tiw.projects.beans.Offer;
 import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.dao.OfferDAO;
+import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 //TODO:	Dopo l'invio dell'offerta la pagina OFFERTA mostra l'elenco delle offerte aggiornate.
@@ -139,6 +141,18 @@ public class GiveOffer extends HttpServlet {
 		
 		
         
+		//find all info of auction tha won by the user
+				WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+				List<WonAuction> wonAuctions = new ArrayList<>();
+				
+				try {
+					wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
         
 
         
@@ -153,6 +167,7 @@ public class GiveOffer extends HttpServlet {
         ctx.setVariable("auction", auction);
         ctx.setVariable("offers", offers);
        ctx.setVariable("items", itemsOfAuction);
+       ctx.setVariable("wonAuctions", wonAuctions);
         
 		templateEngine.process(path, ctx, response.getWriter());
 		

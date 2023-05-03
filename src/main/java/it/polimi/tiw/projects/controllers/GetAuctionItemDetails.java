@@ -124,6 +124,8 @@ public class GetAuctionItemDetails extends HttpServlet {
 			return;
 		}
 		
+		
+		
 		//find all info of auction tha won by the user
 		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
 		List<WonAuction> wonAuctions = new ArrayList<>();
@@ -136,17 +138,7 @@ public class GetAuctionItemDetails extends HttpServlet {
 		}
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		
 		
 		
