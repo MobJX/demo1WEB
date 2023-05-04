@@ -11,25 +11,14 @@
 <!-- List of auction item not closed -->
 <!-- List of auction item closed -->
 
-
-<!-- Create a new item -->
-<form action = "CreateNewItem" method = "post">
-	Create a new item:
-	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
-	<p>Price: <input type = "text" name = "itemPrice" id = "itemPrice"></p>
-	<p>Description: <input type = "text" name = "itemDescription" id = "itemDescription"></p>
-	<p>Image path: <input type = "text" name = "itemImage" id = "itemImage"></p>
-	<input type = "submit" value = "confirm">
-</form><br><br>
+<ul>
+        <li><a href = "NewItem">Create a new item.</a></li>
+        <li><a href = "NewAuction">Create a new auction item.</a></li>
+</ul>
 
 
 
-<!-- Create a new auction item -->
-<form action = "CreateNewItem" method = "post">
-	Make item to auction item:
-	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
-	<input type = "submit" value = "confirm">
-</form><br>
+
 
 <div th:if="${KeywordAuctions.size() >0}">
 		<table>
