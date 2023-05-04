@@ -1,8 +1,12 @@
 package it.polimi.tiw.projects.beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class Item {
 	
-	private int itemID;
+	private int itemID = 0;
 	private String itemName;
 	private String description;
 	private float itemPrice;
@@ -13,14 +17,15 @@ public class Item {
 		super();
 	}
 	
-	public Item(int itemID, String itemName, String desc, float itemPrice, String imagePath, boolean isSold) {
+	
+	public Item(String itemName, String desc, float itemPrice, String imagePath) {
 		super();
-		this.itemID = itemID;
 		this.itemName = itemName;
 		this.description = desc;
 		this.itemPrice = itemPrice;
 		this.imagePath = imagePath;
-		this.isSold = isSold;
+		this.isSold = false;
+		this.itemID++;
 	}
 
 	public int getItemID() {

@@ -93,7 +93,7 @@ public class ItemDAO {
 			pstatement.setString(2, item.getDescription());
 			pstatement.setFloat(3, item.getItemPrice() );
 			pstatement.setBoolean(4, item.isSold());
-			pstatement.setString(5, item.getDescription());
+			pstatement.setString(5, item.getImagePath());
 			pstatement.executeUpdate();
 			
 		}
