@@ -2,9 +2,58 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Selling Page</title>
+<h1>Let's SELL SELL SELL !!!</h1>
 </head>
 <body>
+
+<!-- View auction created by user -->
+<!-- List of auction item not closed -->
+<!-- List of auction item closed -->
+
+
+<!-- Create a new item -->
+<form action = "CreateNewItem" method = "post">
+	Create a new item:
+	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
+	<p>Price: <input type = "text" name = "itemPrice" id = "itemPrice"></p>
+	<p>Description: <input type = "text" name = "itemDescription" id = "itemDescription"></p>
+	<p>Image path: <input type = "text" name = "itemImage" id = "itemImage"></p>
+	<input type = "submit" value = "confirm">
+</form><br><br>
+
+
+
+<!-- Create a new auction item -->
+<form action = "CreateNewItem" method = "post">
+	Make item to auction item:
+	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
+	<input type = "submit" value = "confirm">
+</form><br>
+
+<div th:if="${KeywordAuctions.size() >0}">
+		<table>
+			<thead>
+				<tr>
+ 					<td>AuctionID</td><td>OwnerID </td> <td>Price </td><td>MinUp </td> <td>ExpiryDayTime</td> <td>IsClosedStatus</td>
+ 				</tr>
+			</thead>
+			<tbody>
+			<!--
+				<tr th:each="m : ${KeywordAuctions}">
+					<td th:text="${m.aucID}"></td>
+					<td th:text="${m.ownerID}"></td>
+					<td th:text="${m.aucPrice}"></td>
+					<td th:text="${m.minUP}"></td>
+					<td th:text="${m.expiryDateTime}"></td>
+					<td th:text="${m.isClosed}"></td>
+					<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
+					  -->
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>  
 
 </body>
 </html>
