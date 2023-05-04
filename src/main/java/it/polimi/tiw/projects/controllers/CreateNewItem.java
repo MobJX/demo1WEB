@@ -1,13 +1,8 @@
 package it.polimi.tiw.projects.controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,9 +21,7 @@ import it.polimi.tiw.projects.beans.User;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
-/**
- * Servlet implementation class CreateNewItem
- */
+
 @WebServlet("/CreateNewItem")
 public class CreateNewItem extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -36,12 +29,8 @@ public class CreateNewItem extends HttpServlet {
 	private TemplateEngine templateEngine;
 
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public CreateNewItem() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public void init() throws ServletException {
@@ -57,8 +46,7 @@ public class CreateNewItem extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
+
 		// If the user is not logged in (not present in session) redirect to the login
 				String loginpath = getServletContext().getContextPath() + "/index.html";
 				HttpSession session = request.getSession();
@@ -66,37 +54,44 @@ public class CreateNewItem extends HttpServlet {
 					response.sendRedirect(loginpath);
 					return;
 				}
+				User user = (User) session.getAttribute("user");
 				
-		        User user = (User) session.getAttribute("user");
 		        
-		        response.setCharacterEncoding("utf-8");
-		        response.setContentType("text/html");
-		
-		System.out.println("----------Create a new Item SERVLET---------");
+				System.out.println("----------Create a new Item SERVLET---------");
 
-		String itemName = request.getParameter("itemName");
-		String itemPrice = request.getParameter("itemPrice");
-		String itemDescription = request.getParameter("itemDescription");
-		String itemImage = request.getParameter("itemImage");
-		
-		PrintWriter printWriter = response.getWriter();
-		
-		printWriter.println("<h1>Added successfully!</h1>");
-		printWriter.println("<p>Item: " + itemName + "</p>");
-		printWriter.println("<p>Price: " + itemPrice + "€</p>" );	
-		printWriter.println("<p>Description: " + itemDescription + "</p>");	
-		printWriter.println("Image: <img src=\"" + itemImage + "\" style=\"width:400px;height:300px;\"><br><br>");
-		printWriter.println("<a href='SellPage'>Return</a>");
-		
-		Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage);
-		ItemDAO itemDAO = new ItemDAO(connection);
-		try {
-			itemDAO.createItem(item);
-		} catch (SQLException e){
-			e.printStackTrace();
-		}
-
-		
+				String itemName = null;
+				String itemPrice = null;
+				String itemDescription = null;
+				String itemImage = null;
+				
+				try {
+					itemName = request.getParameter("itemName");
+					itemPrice = request.getParameter("itemPrice");
+					itemDescription = request.getParameter("itemDescription");
+					 itemImage = request.getParameter("itemImage");
+					} catch ( NullPointerException e) {
+					// only for debugging e.printStackTrace();
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+					return;
+				}
+				
+				System.out.println("----------Create a new Item SERVLET---------");
+				Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage);
+				ItemDAO itemDAO = new ItemDAO(connection);
+				try {
+					itemDAO.createItem(item);
+				} catch (SQLException e){
+					e.printStackTrace();
+				}
+				System.out.println("----------Create a new Item SERVLET---------");
+				
+				
+		        // Redirect to the ShowItem
+				String path = "/WEB-INF/ShowItem.html";
+				ServletContext servletContext = getServletContext();
+				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+				templateEngine.process(path, ctx, response.getWriter());
+				
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

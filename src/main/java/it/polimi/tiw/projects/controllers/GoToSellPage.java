@@ -1,8 +1,9 @@
 package it.polimi.tiw.projects.controllers;
 
+import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
 import it.polimi.tiw.projects.beans.User;
-import it.polimi.tiw.projects.dao.ItemDAO;
+import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 import javax.servlet.ServletContext;
@@ -55,35 +56,27 @@ public class GoToSellPage extends HttpServlet {
 		}
 		User user = (User) session.getAttribute("user");
 
-		// Redirect to the SellPage and add missions to the parameters
-		String path = "/WEB-INF/Sell.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		templateEngine.process(path, ctx, response.getWriter());
 		
-		List<Item> items = null;
-		ItemDAO itemDAO = new ItemDAO(connection);
+		
+		List<Auction> auctionClosed = null;
+		List<Auction> auctionOpen = null;
+		AuctionDAO auctionDAO = new AuctionDAO(connection);
 		try {
-			items = itemDAO.findAllItemUnSold();
+			auctionClosed = auctionDAO.findAllAuctionOFF(user);
+			auctionOpen = auctionDAO.findAllAuctionON(user.getId());
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return;
 		}
-		PrintWriter printWriter = response.getWriter();
-		printWriter.println("<table border='1'>");
-		printWriter.println("<th>ID</th><th>Name</th><th>Description</th><th>Image</th><th>Price</th>");
-		for (Item item : items) {
-			printWriter.println("<tr>");
-			printWriter.println("<trd>"+item.getItemID()+"</td>");
-			printWriter.println("<trd>"+item.getItemName()+"</td>");
-			printWriter.println("<trd>"+item.getDescription()+"</td>");
-			printWriter.println("<td><img src='" + item.getImagePath()+"'style='height: 100px;width: 100px'></td>");
-			printWriter.println("<trd>"+item.getItemPrice()+"</td>");
-			printWriter.println("</tr>");
-		}
-		printWriter.println("</table>");
-		
-		
+
+		// Redirect to the SellPage and add missions to the parameters
+				String path = "/WEB-INF/Sell.html";
+				ServletContext servletContext = getServletContext();
+				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+				ctx.setVariable("aucON", auctionOpen);
+				ctx.setVariable("aucOFF", auctionClosed);
+				templateEngine.process(path, ctx, response.getWriter());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

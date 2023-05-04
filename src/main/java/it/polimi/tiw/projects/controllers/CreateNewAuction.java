@@ -16,7 +16,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
-public class CreateNewAuctionItem extends HttpServlet{
+public class CreateNewAuction extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
@@ -26,7 +26,7 @@ public class CreateNewAuctionItem extends HttpServlet{
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateNewAuctionItem() {
+    public CreateNewAuction() {
         super();
         // TODO Auto-generated constructor stub
     }

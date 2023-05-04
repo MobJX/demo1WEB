@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Create a new item:</title>
@@ -7,7 +7,7 @@
 <body>
 
 <!-- Create a new item -->
-<form action = "CreateNewItem" method = "post">
+<form action = "CreateNewItem" method = "GET">
 	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
 	<p>Price: <input type = "text" name = "itemPrice" id = "itemPrice"></p>
 	<p>Description: <input type = "text" name = "itemDescription" id = "itemDescription"></p>
@@ -15,6 +15,6 @@
 	<input type = "submit" value = "confirm">
 </form><br><br>
 
-</head>
+
 </body>
 </html>

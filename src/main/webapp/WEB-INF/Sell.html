@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>Selling Page</title>
-<h1>Let's SELL SELL SELL !!!</h1>
 </head>
+<h1>Let's SELL SELL SELL !!!</h1>
 <body>
 
 <!-- View auction created by user -->
@@ -12,37 +12,51 @@
 <!-- List of auction item closed -->
 
 <ul>
-        <li><a href = "NewItem">Create a new item.</a></li>
-        <li><a href = "NewAuction">Create a new auction item.</a></li>
+        <li><a href = "CreateNewItem">Create a new item</a></li>
+        <li><a href = "CreateNewAuction">Create a new auction item</a></li>
 </ul>
 
-
-
-
-
-<div th:if="${KeywordAuctions.size() >0}">
-		<table>
+<p><b>Open Auctions </b></p>
+	<div>
+		<table border='1'>
 			<thead>
 				<tr>
- 					<td>AuctionID</td><td>OwnerID </td> <td>Price </td><td>MinUp </td> <td>ExpiryDayTime</td> <td>IsClosedStatus</td>
+				<th>Auction ID</th><th>User ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th>
  				</tr>
-			</thead>
-			<tbody>
-			<!--
-				<tr th:each="m : ${KeywordAuctions}">
-					<td th:text="${m.aucID}"></td>
-					<td th:text="${m.ownerID}"></td>
-					<td th:text="${m.aucPrice}"></td>
-					<td th:text="${m.minUP}"></td>
-					<td th:text="${m.expiryDateTime}"></td>
-					<td th:text="${m.isClosed}"></td>
+ 				</thead>
+				<tbody>
+				<tr th:each="on : ${aucON}">
+					<td th:text="${on.aucID}"></td>
+					<td th:text="${on.aucPrice}"></td>
+					<td th:text="${on.minUP}"></td>
+					<td th:text="${on.expiryDateTime}"></td>
 					<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
-					  -->
-					
 				</tr>
 			</tbody>
 		</table>
 	</div>  
 
+
+<p><b>Closed Auctions </b></p>
+	<div>
+		<table border='1'>
+			<thead>
+				<tr>
+				<th>Auction ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th>
+ 				</tr>
+ 				</thead>
+				<tbody>
+				<tr th:each="off : ${aucOFF}">
+					<td th:text="${off.ownerID}"></td>
+					<td th:text="${off.aucPrice}"></td>
+					<td th:text="${off.minUP}"></td>
+					<td th:text="${off.expiryDateTime}"></td>
+					<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>  
+	
+	
 </body>
 </html>
