@@ -75,21 +75,22 @@ public class CreateNewItem extends HttpServlet {
 					return;
 				}
 				
-				System.out.println("----------Create a new Item SERVLET---------");
 				Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage);
+				System.out.println("----------Create a new Item SERVLET---------");
 				ItemDAO itemDAO = new ItemDAO(connection);
 				try {
 					itemDAO.createItem(item);
+					
 				} catch (SQLException e){
 					e.printStackTrace();
 				}
-				System.out.println("----------Create a new Item SERVLET---------");
-				
 				
 		        // Redirect to the ShowItem
 				String path = "/WEB-INF/ShowItem.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+				response.getWriter().println("<p><b>Added successfully!</b></p>");
+				ctx.setVariable("item", item);
 				templateEngine.process(path, ctx, response.getWriter());
 				
 	}

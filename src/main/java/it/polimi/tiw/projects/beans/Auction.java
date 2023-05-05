@@ -1,31 +1,64 @@
 package it.polimi.tiw.projects.beans;
 
 import java.util.Date;
+import java.util.List;
+import java.time.Duration;
+import java.util.ArrayList;
 
 public class Auction {
 	
-	private int aucID;
+	private int aucID = 0;
 	private int ownerID;
 	private float aucPrice;
 	private float minUP;
 	private Date expiryDateTime;
 	private boolean isClosed;
+	private List<Item> aucItems;
+	private float maxOffer;
+	private Duration remaingTimes;
 	
 	public Auction() {
 		super();
 	}
 	
-	public Auction(int aucID, int ownerID, float aucPrice, float minUP, Date expiryDateTime, boolean isClosed) {
+	public Auction(int ownerID, float aucPrice, float minUP, Date expiryDateTime) {
 		super();
-		this.aucID = aucID;
 		this.ownerID = ownerID;
 		this.aucPrice = aucPrice;
 		this.minUP = minUP;
 		this.expiryDateTime = expiryDateTime;
-		this.isClosed = isClosed;
+		this.isClosed = false;
+		this.aucItems = new ArrayList<>();
+		this.aucID++;
+		this.maxOffer = 0;
+		this.remaingTimes = null;
 	}
 	
 	
+
+	public float getMaxOffer() {
+		return maxOffer;
+	}
+
+	public void setMaxOffer(float maxOffer) {
+		this.maxOffer = maxOffer;
+	}
+
+	public Duration getRemaingTimes() {
+		return remaingTimes;
+	}
+
+	public void setRemaingTimes(Duration remaingTimes) {
+		this.remaingTimes = remaingTimes;
+	}
+
+	public List<Item> getAucItems() {
+		return aucItems;
+	}
+
+	public void setAucItems(List<Item> aucItems) {
+		this.aucItems = aucItems;
+	}
 
 	public int getAucID() {
 		return aucID;

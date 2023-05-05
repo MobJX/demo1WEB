@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
 
 
@@ -20,6 +21,7 @@ public class ItemDAO {
 	private static final String SELECT_ITEM_BY_ID = "SELECT * from Item where itemID=? ";
 	private static final String INSERT_ITEM_SQL = "INSERT into Item(itemName,description,itemPrice,isSold,imagePath)"
 													+ "VALUES(?,?,?,?,?)"; //去掉了itemID
+	private static final String INSERT_AUC_ITEM_SQL = "INSERT into auc_item(aucID, itemID)" + "VALUES(?,?)";
 	private static final String UPDATE_ITEM_STATE = "UPDATE Item SET isSold = ?"
 													+ "WHERE itemID = ?";
 	private static final String SELECT_ITEM_BY_STATUS ="select* from Item where isSold = ?";
@@ -29,7 +31,7 @@ public class ItemDAO {
 	//private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID="Select itemID from auc_item where aucID =?";
 	
 	private static final String SELECT_ITEM_ID_OF_AUCTION_BY_AUCID ="SELECT * FROM Item WHERE  itemID in (SELECT itemID FROM auc_item  WHERE aucID =?)";
-           
+	private static final String SELECT_ITEM_NOT_IN_AUCTION = "SELECT * from Item where itemID not in (SELECT itemID FROM auc_item)";       
 	
 	
 	
@@ -94,6 +96,17 @@ public class ItemDAO {
 			pstatement.setFloat(3, item.getItemPrice() );
 			pstatement.setBoolean(4, item.isSold());
 			pstatement.setString(5, item.getImagePath());
+			pstatement.executeUpdate();
+			
+		}
+	}
+	
+	public void insertItemInAuction (Auction auction, Item item) throws SQLException {
+		
+		try(PreparedStatement pstatement = con.prepareStatement(INSERT_AUC_ITEM_SQL);){
+			//pstatement.setInt(1, id); itemID autogenerato da DB
+			pstatement.setInt(1, auction.getAucID());
+			pstatement.setInt(2, item.getItemID());
 			pstatement.executeUpdate();
 			
 		}
@@ -205,8 +218,8 @@ public class ItemDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Integer> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
-		List<Integer> IDs = new ArrayList<Integer>();
+	public List<Item> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
+		List<Item> items = new ArrayList<Item>();
 		
 		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){
 			// 需要将 pstatement.setInt(0, aucID); 改为 pstatement.setInt(1, aucID);。这是因为 PreparedStatement 中参数的索引从 1 开始而不是从 0 开始
@@ -222,7 +235,34 @@ public class ItemDAO {
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
 					
-				IDs.add(item.getItemID());
+				items.add(item);
+				
+				}
+			}
+		}
+		return items;
+	}
+	
+	/**
+	 * find all not auctioned item
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Item> findAll_Item_Not_In_Auctioned() throws SQLException{
+		List<Item> IDs = new ArrayList<Item>();
+		
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_ITEM_NOT_IN_AUCTION);){
+			try(ResultSet result = pstatement .executeQuery();){
+				while(result.next()) {
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDescription(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					
+					IDs.add(item);
 				
 				}
 			}
@@ -231,8 +271,6 @@ public class ItemDAO {
 		
 		
 		return IDs;
-	
-		
 	}
 	
 	

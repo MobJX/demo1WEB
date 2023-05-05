@@ -1,9 +1,15 @@
 package it.polimi.tiw.projects.controllers;
 
+import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
+import it.polimi.tiw.projects.beans.Offer;
 import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.dao.UserDAO;
+import it.polimi.tiw.projects.dao.OfferDAO;
+import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.dao.AuctionDAO;
+import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 import javax.servlet.ServletContext;
@@ -23,7 +29,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.ArrayList;
 
 @WebServlet("/SellPage")
 public class GoToSellPage extends HttpServlet {
@@ -57,14 +67,73 @@ public class GoToSellPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 
 		
-		
-		List<Auction> auctionClosed = null;
-		List<Auction> auctionOpen = null;
-		AuctionDAO auctionDAO = new AuctionDAO(connection);
+		List<Item> items = null;
+		//List<Auction> auctionClosed = null;
+		//List<Auction> auctionOpen = null;
+		ItemDAO itemDAO = new ItemDAO(connection);
+		//AuctionDAO auctionDAO = new AuctionDAO(connection);
 		try {
-			auctionClosed = auctionDAO.findAllAuctionOFF(user);
-			auctionOpen = auctionDAO.findAllAuctionON(user.getId());
+			items = itemDAO.findAll_Item_Not_In_Auctioned();
+		//	auctionClosed = auctionDAO.findAllAuctionOFF(user);
+		//	auctionOpen = auctionDAO.findAllAuctionON(user.getId());
+		//	
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		List<Auction> aucON = new ArrayList<>();
+		List<Item> itemsON = new ArrayList<>();
+		List<Offer> offers = new ArrayList<>();
+		float maxOffer = 0;
+		Duration remaingTimes = null;
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime expiry;
+		
+		
+		List<WonAuction> aucOFF = new ArrayList<>();
+		User bidder = null;
+
+		UserDAO userDAO = new UserDAO(connection);
+		OfferDAO offerDAO = new OfferDAO(connection);
+		AuctionDAO auctionDAO = new AuctionDAO(connection);
+		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+		
+		try {
+			// Open Auctions
+			aucON = auctionDAO.findAllAuctionON(user.getId());
+			for	(Auction auc : aucON) {
+				itemsON = itemDAO.findAll_ItemID_OfAuction(auc.getAucID());
+				offers = offerDAO.findAllOfferOfAuction(auc);
+				for (Offer offer : offers) {
+					if (offer.getOfferPrice()>maxOffer) {
+						maxOffer = offer.getOfferPrice();
+					}
+				}
+				expiry = auc.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+				remaingTimes = Duration.between(now, expiry);
+				auc.setRemaingTimes(remaingTimes);
+				auc.setMaxOffer(maxOffer);
+				auc.setAucItems(itemsON);
+			}
 			
+			// Closed Auctions
+			aucOFF = wonAuctionDAO.findAllAuctionsWon();
+			maxOffer = 0;
+			for	(WonAuction wonAuc : aucOFF) {
+				offers = offerDAO.findAllOfferOfAuction(wonAuc);
+				for (Offer offer : offers) {
+					if (offer.getOfferPrice()>maxOffer) {
+						maxOffer = offer.getOfferPrice();
+					}
+				}
+				bidder = userDAO.findUserOfAuction(wonAuc);
+				
+				wonAuc.setBidderID(bidder.getId());
+				wonAuc.setBidderName(bidder.getUsername());
+				wonAuc.setBidderAddress(bidder.getAddress());
+				wonAuc.setWinningBid(maxOffer);
+			}
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return;
@@ -74,8 +143,9 @@ public class GoToSellPage extends HttpServlet {
 				String path = "/WEB-INF/Sell.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-				ctx.setVariable("aucON", auctionOpen);
-				ctx.setVariable("aucOFF", auctionClosed);
+				ctx.setVariable("aucItems", items);
+				ctx.setVariable("aucON", aucON);
+				ctx.setVariable("aucOFF", aucOFF);
 				templateEngine.process(path, ctx, response.getWriter());
 	}
 

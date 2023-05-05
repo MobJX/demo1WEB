@@ -1,6 +1,7 @@
 package it.polimi.tiw.projects.dao;
 
 import it.polimi.tiw.projects.beans.Auction;
+import it.polimi.tiw.projects.beans.User;
 import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
@@ -13,7 +14,21 @@ import java.util.List;
 
 public class WonAuctionDAO {
     private Connection connection;
+    
+    private static final String SELECT_USER_BY_AUCTION = "SELECT * FROM offer "
+    		+ "WHERE offerPrice = (SELECT MAX(offerPrice) FROM offer);";
+    private static final String SELECT_HIGHESTBIDDER = "SELECT * "
+    		+ "FROM Auction a "
+    		+ "JOIN Offer o ON a.aucID = o.aucID "
+    		+ "JOIN User u ON u.userID = o.userID "
+    		+ "WHERE a.isClosed = 1 "
+    		+ "AND o.offerPrice = ("
+    		+ " SELECT MAX(offerPrice) "
+    		+ " FROM Offer "
+    		+ " WHERE aucID = a.aucID"
+    		+ ")";
 
+    
     public WonAuctionDAO(Connection connection) {
         this.connection = connection;
     }
@@ -48,5 +63,44 @@ public class WonAuctionDAO {
         }
 
         return wonAuctions;
+    }
+    
+    public User findUserWonByAction(Auction auctions) throws SQLException{
+    	User userWon = null;
+    	try(PreparedStatement pstatement = connection.prepareStatement(SELECT_USER_BY_AUCTION);){
+			try(ResultSet result = pstatement.executeQuery();){
+				if(result.next()) {
+					userWon = new User();
+					userWon.setId(result.getInt("userID"));
+					userWon.setUsername(result.getString("username"));
+					userWon.setAddress(result.getString("address"));
+				}
+			}
+    	}
+    	
+    	return userWon;
+    }
+    
+    public List<WonAuction> findAllAuctionsWon() throws SQLException{
+    	List<WonAuction> wonAuctions = new ArrayList<>();
+    	try(PreparedStatement pstatement = connection.prepareStatement(SELECT_HIGHESTBIDDER);){
+    		try(ResultSet result = pstatement.executeQuery();){
+    			while (result.next()) {
+    				WonAuction wonAuction = new WonAuction();
+    				wonAuction.setAucID(result.getInt("a.aucID"));
+                    wonAuction.setOwnerID(result.getInt("a.ownerID"));
+                    wonAuction.setAucPrice(result.getFloat("a.aucPrice"));
+                    wonAuction.setMinUP(result.getFloat("a.minUP"));
+                    wonAuction.setExpiryDateTime(result.getTimestamp("a.expiryDateTime"));
+                    wonAuction.setClosed(result.getBoolean("a.isClosed"));
+                    wonAuction.setWinningBid(result.getFloat("o.offerPrice"));
+                    wonAuction.setBidderID(result.getInt("u.userID"));
+                    wonAuction.setBidderName(result.getString("u.username"));
+                    wonAuction.setBidderAddress(result.getString("u.address"));
+                    wonAuctions.add(wonAuction);
+    			}
+    		}
+    	}
+    	return wonAuctions;
     }
 }

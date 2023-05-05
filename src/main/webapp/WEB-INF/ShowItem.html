@@ -2,33 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Added successfully!</title>
+<title>Item detail</title>
 </head>
 <body>
 	
 <!-- Show item details of this Auction -->
-<table>
-  <thead>
-    <tr>
-      <th>Item ID</th>
-      <th>Item Name</th>
-      <th>Item Description</th>
-      <th>Item Image</th>
-      <th>Starting Price</th>
-    </tr>
-  </thead>
-  <tbody>
-	<tr th:each="item : ${items}">
-		<td th:text="${item.itemID}"></td>
-		<td th:text="${item.itemName}"></td>
-		<td th:text="${item.description}"></td>
-		<td><img th:src="${item.imagePath}" width="200" height="150"></td>
-		<td th:text="${item.itemPrice}"></td>
-    </tr>
-    </tbody>
-</table>
-<br>
-<a th:href="@{/CreateNewItem}">Return</a>
+
+ID: <span th:text="${item.itemID}"></span><br>
+Name: <span th:text="${item.itemName}"></span><br>
+Description: <span th:text="${item.description}"></span><br>
+<img th:src="${item.imagePath}" width="400" height="300"><br>
+Price: <span th:text="${item.itemPrice}"> </span><br>
+Is Sold: <span th:text="${item.isSold}"></span><br>
+
+
+<!--<a th:href="@{/CreateNewItem}">Return</a>  -->
 	
 </body>
 </html>

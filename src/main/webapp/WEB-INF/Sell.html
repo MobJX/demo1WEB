@@ -10,31 +10,86 @@
 <!-- View auction created by user -->
 <!-- List of auction item not closed -->
 <!-- List of auction item closed -->
+<p><b>Create a new Item</b></p>
+<p>Please enter the following information</p>
+<form action = "CreateNewItem" method = "GET">
+	<p>Item: <input type = "text" name = "itemName" id = "itemName"></p>
+	<p>Price: <input type = "text" name = "itemPrice" id = "itemPrice"></p>
+	<p>Description: <input type = "text" name = "itemDescription" id = "itemDescription"></p>
+	<p>Image path: <input type = "text" name = "itemImage" id = "itemImage"></p>
+	<input type = "submit" value = "confirm">
+</form><br><br>
 
-<ul>
-        <li><a href = "CreateNewItem">Create a new item</a></li>
-        <li><a href = "CreateNewAuction">Create a new auction item</a></li>
-</ul>
+
+<p><b>Create a new Auction</b></p>
+<p>List of available items:</p>
+<p><i>Please select the item you wish to auction</i></p>
+<form action = "CreateNewAuction" method = "GET">
+	<table border='1'>
+		<thead>
+			<tr>
+				<th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Image</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each = "auc:${aucItems}">
+				<td th:text="${auc.itemID}"></td>
+				<td th:text="${auc.itemName}"></td>
+				<td th:text="${auc.description}"></td>
+				<td th:text="${auc.itemPrice}"></td>
+				<td><img  th:src="@{${auc.imagePath}}" width="80" height="65"></td>
+				<td><input type="checkbox" th:field = "*{selectedItems}" th:value = "${auc.itemID}" name="selectedItems"/></td>
+			</tr>
+			<tr>
+				<td colspan = "6">
+					<label for = "expiryDateTime"> Expiry Data and Time:</label>
+					<input type = "datetime-local" id = "expiryDateTime" name = "expiryDateTime">
+				</td>
+			</tr>
+			<tr>
+				<td colspan = "6">
+					<label for = "minUP">Minimum Raise:</label>
+					<input type = "number" id = "minUP" name = "minUP">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<input type = "submit" value = "confirm">
+</form>
+
+
 
 <p><b>Open Auctions </b></p>
-	<div>
-		<table border='1'>
-			<thead>
-				<tr>
-				<th>Auction ID</th><th>User ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th>
- 				</tr>
- 				</thead>
-				<tbody>
-				<tr th:each="on : ${aucON}">
-					<td th:text="${on.aucID}"></td>
-					<td th:text="${on.aucPrice}"></td>
-					<td th:text="${on.minUP}"></td>
-					<td th:text="${on.expiryDateTime}"></td>
-					<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
-				</tr>
-			</tbody>
-		</table>
-	</div>  
+<table border = '1'>
+	<thead>
+		<tr>
+			<th>Auction ID</th><th>Items</th><th>Max Offer</th><th>Time Remaining</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr th:each="on : ${aucON}">
+			<td th:text="${on.aucID}"></td>
+			<td>
+				<table>
+					<tbody>
+						<tr th:each = "item: ${on.aucItems}">
+							<td th:text="${item.itemID}" style="border: 1px solid black; padding: 5px;"></td>
+    						<td th:text="${item.itemName}" style="border: 1px solid black; padding: 5px;"></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+			<td th:text = "${on.maxOffer}"></td>
+			<td th:text="${on.remaingTimes.toDays()} + ' Days  ' +
+							${on.remaingTimes.toHoursPart()} + ':' +
+							${on.remaingTimes.toMinutesPart()} + ':' +
+							${on.remaingTimes.toSecondsPart()}">
+			</td>
+			<td><a th:href="@{/GetAuctionItemDetails(aucID=${off.aucID})}">Details</a></td>
+		</tr>
+	</tbody>
+</table>
+
 
 
 <p><b>Closed Auctions </b></p>
@@ -42,16 +97,29 @@
 		<table border='1'>
 			<thead>
 				<tr>
-				<th>Auction ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th>
+				<th>Auction ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th><th>Bidder</th>
+				<th>Final Price</th>
  				</tr>
  				</thead>
 				<tbody>
 				<tr th:each="off : ${aucOFF}">
-					<td th:text="${off.ownerID}"></td>
+					<td th:text="${off.aucID}"></td>
 					<td th:text="${off.aucPrice}"></td>
 					<td th:text="${off.minUP}"></td>
 					<td th:text="${off.expiryDateTime}"></td>
-					<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
+					<td>
+						<table>
+						<tbody>
+							<tr>
+								<td th:text = "${off.bidderID}" style="border: 1px solid black; padding: 5px;"></td>
+								<td th:text = "${off.bidderName}" style="border: 1px solid black; padding: 5px;"></td>
+								<td th:text = "${off.bidderAddress}" style="border: 1px solid black; padding: 10px;"></td>
+							</tr>
+							</tbody>
+						</table>
+					</td>
+					<td th:text="${off.winningBid}"></td>
+					<td><a th:href="@{/GetAuctionItemDetails(aucID=${off.aucID})}">Details</a></td>
 				</tr>
 			</tbody>
 		</table>
