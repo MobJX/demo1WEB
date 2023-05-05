@@ -21,7 +21,7 @@ public class ItemDAO {
 	private static final String SELECT_ITEM_BY_ID = "SELECT * from Item where itemID=? ";
 	private static final String INSERT_ITEM_SQL = "INSERT into Item(itemName,description,itemPrice,isSold,imagePath)"
 													+ "VALUES(?,?,?,?,?)"; //去掉了itemID
-	private static final String INSERT_AUC_ITEM_SQL = "INSERT into auc_item(aucID, itemID)" + "VALUES(?,?)";
+	private static final String INSERT_AUC_ITEM_SQL = "INSERT into auc_item(aucID, itemID) " + "VALUES(?,?)";
 	private static final String UPDATE_ITEM_STATE = "UPDATE Item SET isSold = ?"
 													+ "WHERE itemID = ?";
 	private static final String SELECT_ITEM_BY_STATUS ="select* from Item where isSold = ?";
@@ -250,6 +250,7 @@ public class ItemDAO {
 	 * @throws SQLException
 	 */
 	public List<Item> findAll_Item_OfAuction( int aucID ) throws SQLException{
+		System.out.println("Is founding items for the auction " + aucID);
 		List<Item> items = new ArrayList<Item>();
 		
 		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){
@@ -265,7 +266,7 @@ public class ItemDAO {
 					item.setItemPrice(result.getFloat("itemPrice"));
 					item.setSold(result.getBoolean("isSold"));
 					item.setImagePath(result.getString("imagePath"));
-					
+					System.out.println(item.getItemName());
 				items.add(item);
 				
 				}

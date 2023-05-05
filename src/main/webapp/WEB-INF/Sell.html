@@ -97,7 +97,7 @@
 		<table border='1'>
 			<thead>
 				<tr>
-				<th>Auction ID</th><th>Auction Price</th><th>minUP</th><th>ExpiryDayTime</th><th>Bidder</th>
+				<th>Auction ID</th><th>Starting Price</th><th>minUP</th><th>ExpiryDayTime</th><th>Bidder</th>
 				<th>Final Price</th>
  				</tr>
  				</thead>
@@ -109,16 +109,16 @@
 					<td th:text="${off.expiryDateTime}"></td>
 					<td>
 						<table>
-						<tbody>
-							<tr>
-								<td th:text = "${off.bidderID}" style="border: 1px solid black; padding: 5px;"></td>
-								<td th:text = "${off.bidderName}" style="border: 1px solid black; padding: 5px;"></td>
-								<td th:text = "${off.bidderAddress}" style="border: 1px solid black; padding: 10px;"></td>
-							</tr>
-							</tbody>
+							<thead>
+								<tr>
+									<td th:text = "${off.bidder != null ? off.bidder.id : ''}"></td>
+									<td th:text = "${off.bidder != null ? off.bidder.username : ''}"></td>
+									<td th:text = "${off.bidder != null ? off.bidder.address : ''}" ></td>
+								</tr>
+							</thead>
 						</table>
 					</td>
-					<td th:text="${off.winningBid}"></td>
+					<td th:text="${off.maxOffer}"></td>
 					<td><a th:href="@{/GetAuctionDetails(aucID=${off.aucID})}">Details</a></td>
 				</tr>
 			</tbody>

@@ -49,6 +49,7 @@ public class AuctionDAO {
 	 */
 	
 	public Auction findAuction( int id) throws SQLException{
+		System.out.println("Found auction " + id);
 		Auction auc = null;
 		//String query ="SELECT * from Auction where aucID=? ";
 		try(PreparedStatement pstatement = con.prepareStatement(SELECT_AUCTION_BY_ID);){

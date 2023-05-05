@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -72,6 +73,9 @@ public class GetAuctionDetails extends HttpServlet {
 
 		// get and check params
 		Integer aucID = null;
+		
+
+	    
 		try {
 			aucID = Integer.parseInt(request.getParameter("aucID"));
 		} catch (NumberFormatException | NullPointerException e) {
@@ -80,7 +84,8 @@ public class GetAuctionDetails extends HttpServlet {
 			return;
 		}
 		
-	
+		Date now = new Date();
+		boolean  canClose = false;
 		AuctionDAO auctionDAO = new AuctionDAO(connection);
 		Auction auction = null;
 		
@@ -95,10 +100,13 @@ public class GetAuctionDetails extends HttpServlet {
 			//verify that auction exists or not
 			auction = auctionDAO.findAuction(aucID);
 			
+			
 			if (auction == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
 				return;
 			}
+			
+			System.out.println("Founded auction " + auction.getAucID());
 			//find all of item in this auction 
 			items = itemDAO.findAll_Item_OfAuction(auction.getAucID());
 			auction.setAucItems(items);
@@ -110,6 +118,9 @@ public class GetAuctionDetails extends HttpServlet {
 				offer.setUserName(userOffer.getUsername());
 			}
 			
+			if (now.after(auction.getExpiryDateTime()) && !auction.isClosed()){
+				canClose = true;
+			}
 		
 
 		} catch (SQLException e) {
@@ -123,6 +134,7 @@ public class GetAuctionDetails extends HttpServlet {
 		String path = "/WEB-INF/AuctionDetails.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("canClose", canClose);
 		ctx.setVariable("auction",auction);
 		ctx.setVariable("offers", offers);
 

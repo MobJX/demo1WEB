@@ -26,7 +26,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Duration;
@@ -91,7 +90,7 @@ public class GoToSellPage extends HttpServlet {
 		LocalDateTime expiry;
 		
 		
-		List<WonAuction> aucOFF = new ArrayList<>();
+		List<Auction> aucOFF = new ArrayList<>();
 		User bidder = null;
 
 		UserDAO userDAO = new UserDAO(connection);
@@ -103,6 +102,7 @@ public class GoToSellPage extends HttpServlet {
 			// Open Auctions
 			aucON = auctionDAO.findAllAuctionON(user.getId());
 			for	(Auction auc : aucON) {
+				maxOffer = 0;
 				itemsON = itemDAO.findAll_Item_OfAuction(auc.getAucID());
 				offers = offerDAO.findAllOfferOfAuction(auc);
 				for (Offer offer : offers) {
@@ -118,21 +118,20 @@ public class GoToSellPage extends HttpServlet {
 			}
 			
 			// Closed Auctions
-			aucOFF = wonAuctionDAO.findAllAuctionsWon();
-			maxOffer = 0;
-			for	(WonAuction wonAuc : aucOFF) {
-				offers = offerDAO.findAllOfferOfAuction(wonAuc);
+			aucOFF = auctionDAO.findAllAuctionOFF(user);
+		
+			
+			for	(Auction auc : aucOFF) {
+				maxOffer = 0;
+				offers = offerDAO.findAllOfferOfAuction(auc);
 				for (Offer offer : offers) {
 					if (offer.getOfferPrice()>maxOffer) {
 						maxOffer = offer.getOfferPrice();
 					}
 				}
-				bidder = userDAO.findUserOfAuction(wonAuc);
-				
-				wonAuc.setBidderID(bidder.getId());
-				wonAuc.setBidderName(bidder.getUsername());
-				wonAuc.setBidderAddress(bidder.getAddress());
-				wonAuc.setWinningBid(maxOffer);
+				bidder = userDAO.findUserOfAuction(auc);
+				auc.setBidder(bidder);
+				auc.setMaxOffer(maxOffer);
 			}
 		} catch(SQLException e) {
 			e.printStackTrace();

@@ -5,6 +5,18 @@ public class User {
 	private int id;
 	private String username;
 	private String address;
+	
+	
+	
+	public User() {
+		super();
+	}
+	public User(int id, String username, String address) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.address = address;
+	}
 	public int getId() {
 		return id;
 	}

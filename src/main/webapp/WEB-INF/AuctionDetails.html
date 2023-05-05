@@ -55,8 +55,8 @@
 	</table>
 	
 <!-- Close the current Auction if it is not already closed -->
-<div th:if="${!auction.isClosed}">
-	<p>Close the current Auction</p>
+<div th:if="${canClose}">
+	<p>Time is up, you can choose to close this Auction</p>
 	<form th:action="@{/CloseAuction}"method="GET">
   		<input type="hidden" name="auctionID" th:value="${auction.aucID}" />
   		<button type="submit">Close</button>

@@ -16,6 +16,7 @@ public class Auction {
 	private List<Item> aucItems;
 	private float maxOffer;
 	private Duration remaingTimes;
+	private User bidder;
 	
 	public Auction() {
 		super();
@@ -32,15 +33,25 @@ public class Auction {
 		this.aucID++;
 		this.maxOffer = 0;
 		this.remaingTimes = null;
+		this.bidder = null;
 	}
 	
 	
+
+	public User getBidder() {
+		return bidder;
+	}
+
+	public void setBidder(User bidder) {
+		this.bidder = bidder;
+	}
 
 	public float getMaxOffer() {
 		return maxOffer;
 	}
 
 	public void setMaxOffer(float maxOffer) {
+		System.out.println("Auction " + this.aucID +" is setting MaxPrice: " + maxOffer);
 		this.maxOffer = maxOffer;
 	}
 
@@ -57,6 +68,10 @@ public class Auction {
 	}
 
 	public void setAucItems(List<Item> aucItems) {
+		for (Item it:aucItems) {
+			System.out.println("Set " + it.getItemName() + " in auction " + getAucID());
+		}
+
 		this.aucItems = aucItems;
 	}
 
@@ -81,6 +96,7 @@ public class Auction {
 	}
 
 	public void setAucPrice(float aucPrice) {
+		System.out.println("Auction " + this.aucID +" is setting StartingPrice: " + aucPrice);
 		this.aucPrice = aucPrice;
 	}
 
