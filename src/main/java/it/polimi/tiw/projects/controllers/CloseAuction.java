@@ -65,9 +65,9 @@ public class CloseAuction extends HttpServlet {
 
         try {
             auction = auctionDAO.findAuction(auctionId);
-            auction.setClosed(true);
+            
             // update SQL
-            auctionDAO.closeAuction(auction);
+            auction.setClosed(auctionDAO.closeAuction(auction));
             
         } catch (SQLException e) {
             e.printStackTrace();

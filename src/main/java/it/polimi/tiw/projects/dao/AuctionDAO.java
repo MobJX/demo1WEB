@@ -27,7 +27,7 @@ public class AuctionDAO {
 	private static final String SELECT_AUCTION_BY_ID = "SELECT * FROM Auction WHERE aucID=? ";
 	private static final String INSERT_AUCTION_SQL = "INSERT INTO Auction (ownerID,aucPrice,minUP,expiryDateTime,isClosed)"
 														+ " VALUES(?,?,?,?,?)"; //去掉了aucID
-	private static final String CLOSE_AUCTION_BY_ID = "UPDATE Auction SET isClosed = ?"
+	private static final String CLOSE_AUCTION_BY_ID = "UPDATE Auction SET isClosed = ? "
 														+"WHERE aucID = ?";
 	private static final String SELECT_AUCTION_BY_STATUS_ID = "SELECT * FROM Auction WHERE ownerID =? and isClosed = ?";
 	private static final String SELECT_AUCTION_BY_ITEM_ID ="SELECT * FROM Auction WHERE isClosed=? and "
@@ -142,7 +142,6 @@ public class AuctionDAO {
 		}
 		
 		return rowUpdated;
-		
 	}
 	
 	
