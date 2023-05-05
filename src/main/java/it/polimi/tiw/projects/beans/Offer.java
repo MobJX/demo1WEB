@@ -10,18 +10,30 @@ public class Offer {
 	private int aucID;
 	private float offerPrice;
 	private Date offerDayTime;
+	private String userName;
 	
 	public Offer() {
 		super();
 	}
 	
-	public Offer(int offerID, int userID, int aucID, float offerPrice, Date offerDayTime) {
+	public Offer(int offerID, int userID, int aucID, float offerPrice, Date offerDayTime, String userName) {
 		super();
 		this.offerID = offerID;
 		this.userID = userID;
 		this.aucID = aucID;
 		this.offerPrice = offerPrice;
 		this.setOfferDayTime(offerDayTime);
+		this.userName = userName;
+	}
+	
+	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public int getOfferID() {

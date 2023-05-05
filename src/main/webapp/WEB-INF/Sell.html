@@ -55,11 +55,11 @@
 		</tbody>
 	</table>
 	<input type = "submit" value = "confirm">
-</form>
+</form><br><br>
 
 
 
-<p><b>Open Auctions </b></p>
+<p><b>My Open Auctions </b></p>
 <table border = '1'>
 	<thead>
 		<tr>
@@ -85,14 +85,14 @@
 							${on.remaingTimes.toMinutesPart()} + ':' +
 							${on.remaingTimes.toSecondsPart()}">
 			</td>
-			<td><a th:href="@{/GetAuctionItemDetails(aucID=${off.aucID})}">Details</a></td>
+			<td><a th:href="@{/GetAuctionDetails(aucID=${on.aucID})}">Details</a></td>
 		</tr>
 	</tbody>
 </table>
 
 
 
-<p><b>Closed Auctions </b></p>
+<p><b>My Closed Auctions </b></p>
 	<div>
 		<table border='1'>
 			<thead>
@@ -119,12 +119,11 @@
 						</table>
 					</td>
 					<td th:text="${off.winningBid}"></td>
-					<td><a th:href="@{/GetAuctionItemDetails(aucID=${off.aucID})}">Details</a></td>
+					<td><a th:href="@{/GetAuctionDetails(aucID=${off.aucID})}">Details</a></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>  
-	
 	
 </body>
 </html>

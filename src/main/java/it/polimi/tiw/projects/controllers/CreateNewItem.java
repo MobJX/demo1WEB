@@ -86,7 +86,7 @@ public class CreateNewItem extends HttpServlet {
 				}
 				
 		        // Redirect to the ShowItem
-				String path = "/WEB-INF/ShowItem.html";
+				String path = "/WEB-INF/NewItem.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 				response.getWriter().println("<p><b>Added successfully!</b></p>");

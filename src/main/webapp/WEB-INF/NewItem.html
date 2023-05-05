@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Item detail</title>
+<title>Item Created Successfully</title>
 </head>
 <body>
 	
@@ -13,10 +13,11 @@ Name: <span th:text="${item.itemName}"></span><br>
 Description: <span th:text="${item.description}"></span><br>
 <img th:src="${item.imagePath}" width="400" height="300"><br>
 Price: <span th:text="${item.itemPrice}"> </span><br>
-Is Sold: <span th:text="${item.isSold}"></span><br>
 
 
 <!--<a th:href="@{/CreateNewItem}">Return</a>  -->
-	
+<a th:href="@{/Home}">Back to home</a>
+<br>
+<a th:href="@{/SellPage}">Back to SellPage</a>
 </body>
 </html>

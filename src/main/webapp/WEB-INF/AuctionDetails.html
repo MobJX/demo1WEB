@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Auction Details</title>
+</head>
+<body>
+	<h1>Auction details</h1>
+	<a th:href="@{/Home}">Back to home</a>
+	<br>
+	<a th:href="@{/SellPage}">Back to SellPage</a>
+	
+	
+	
+<!-- Show item details of this Auction -->
+	<p><b>Auction ID <span th:text = "${auction.aucID}"></span></b></p>
+	<p><b>Owner ID: <span th:text = "${auction.ownerID}"></span></b></p>
+	<p><b>Items:</b></p>
+	<table border = "1">
+		<thead>
+			<tr>
+				<th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Image</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each = "item : ${auction.aucItems}">
+				<td th:text="${item.itemID}"></td>
+				<td th:text="${item.itemName}"></td>
+				<td th:text="${item.description}"></td>
+				<td th:text="${item.itemPrice}"></td>
+				<td><img  th:src="@{${item.imagePath}}" width="80" height="65"></td>
+			</tr>
+		</tbody>
+	</table>
+	<p><b>Starting Price: <span th:text = ${auction.aucPrice}></span></b></p>
+	<p><b>Minimum Raise: <span th:text = "${auction.minUP}"></span></b></p>
+	<p><b>Expiry Date Time: <span th:text = "${auction.expiryDateTime}"></span></b></p>
+	<p><b>Closed: <span th:text = "${auction.isClosed}"></span></b></p>
+	<h2>List of Offers:</h2>
+	<table>
+  		<thead>
+    		<tr>
+      			<th>User Name</th>
+      			<th>Offer Amount</th>
+      			<th>Offer Date</th>
+    		</tr>
+  		</thead>
+  		<tbody>
+     		<tr th:each="o: ${offers}">
+      			<td th:text="${o.userName}"></td>
+      			<td th:text="${o.offerPrice}"></td>
+      			<td th:text="${o.offerDayTime}"></td>
+    		</tr>
+  		</tbody>
+	</table>
+	
+<!-- Close the current Auction if it is not already closed -->
+<div th:if="${!auction.isClosed}">
+	<p>Close the current Auction</p>
+	<form th:action="@{/CloseAuction}"method="GET">
+  		<input type="hidden" name="auctionID" th:value="${auction.aucID}" />
+  		<button type="submit">Close</button>
+	</form>
+</div>
+</body>
+</html>

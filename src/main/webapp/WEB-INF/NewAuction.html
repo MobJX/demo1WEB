@@ -26,8 +26,12 @@
 	</table>
 	<h2>Starting Price: <span th:text = ${auction.aucPrice}></span></h2>
 	<h2>Minimum Raise: <span th:text = "${auction.minUP}"></span></h2>
-	<h2>Expiry Date Time: <span th:text = "${auction.expiryDataTime}"></span></h2>
+	<h2>Expiry Date Time: <span th:text = "${auction.expiryDateTime}"></span></h2>
 	<h2>Closed: <span th:text = "${auction.isClosed}"></span></h2>
+	
+<a th:href="@{/Home}">Back to home</a>
+<br>
+<a th:href="@{/SellPage}">Back to SellPage</a>
 
 </body>
 </html>

@@ -218,7 +218,38 @@ public class ItemDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Item> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
+	public List<Integer> findAll_ItemID_OfAuction( int aucID ) throws SQLException{
+		List<Integer> items = new ArrayList<Integer>();
+		
+		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){
+			// 需要将 pstatement.setInt(0, aucID); 改为 pstatement.setInt(1, aucID);。这是因为 PreparedStatement 中参数的索引从 1 开始而不是从 0 开始
+			//pstatement.setInt(0, aucID); ERRORE!!!!!!
+			pstatement.setInt(1, aucID);
+			try(ResultSet result = pstatement .executeQuery();){
+				while(result.next()) {
+					Item item = new Item();
+					item.setItemID(result.getInt("itemID"));
+					item.setItemName(result.getString("itemName"));
+					item.setDescription(result.getString("description"));
+					item.setItemPrice(result.getFloat("itemPrice"));
+					item.setSold(result.getBoolean("isSold"));
+					item.setImagePath(result.getString("imagePath"));
+					
+				items.add(item.getItemID());
+				
+				}
+			}
+		}
+		return items;
+	}
+	
+	/**
+	 * with specific aucID it returns all the item's id of that auction using table auc_item
+	 * @param aucID
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Item> findAll_Item_OfAuction( int aucID ) throws SQLException{
 		List<Item> items = new ArrayList<Item>();
 		
 		try(PreparedStatement pstatement = con.prepareStatement( SELECT_ITEM_ID_OF_AUCTION_BY_AUCID);){

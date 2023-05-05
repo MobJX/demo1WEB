@@ -103,7 +103,7 @@ public class GoToSellPage extends HttpServlet {
 			// Open Auctions
 			aucON = auctionDAO.findAllAuctionON(user.getId());
 			for	(Auction auc : aucON) {
-				itemsON = itemDAO.findAll_ItemID_OfAuction(auc.getAucID());
+				itemsON = itemDAO.findAll_Item_OfAuction(auc.getAucID());
 				offers = offerDAO.findAllOfferOfAuction(auc);
 				for (Offer offer : offers) {
 					if (offer.getOfferPrice()>maxOffer) {

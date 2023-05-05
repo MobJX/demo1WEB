@@ -109,7 +109,7 @@ public class CreateNewAuction extends HttpServlet{
 			auctionDAO.createAuction(auction);
 			
 			// return a list of item in this auction to NewAuction
-			aucitems = itemDAO.findAll_ItemID_OfAuction(auction.getAucID());
+			aucitems = itemDAO.findAll_Item_OfAuction(auction.getAucID());
 			auction.setAucItems(aucitems);
 			
 			// update auc_item SQL
