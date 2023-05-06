@@ -3,107 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <title>OfferDetails</title>
+<link rel="stylesheet" href="./css/OfferDetails.css" th:href="@{/css/OfferDetails.css}"/>
 </head>
 <body>
-	<h1>Items details</h1>
-	<a th:href="@{/Home}">Back to home</a>
-	<br>
-	<a th:href="@{/BuyPage}">Back to BuyPage</a>
-	
-	
-	
-<!-- Show item details of this Auction -->
-<table>
-  <thead>
-    <tr>
-      <th>Item ID</th>
-      <th>Item Name</th>
-      <th>Item Description</th>
-      <th>Starting Price</th>
-      <th>Item Status</th>
-    </tr>
-  </thead>
-  <tbody>
-   
-     <tr th:each="item : ${items}">
-      <td th:text="${item.itemID}"></td>
-      <td th:text="${item.itemName}"></td>
-      <td th:text="${item.description}"></td>
-      <td th:text="${item.itemPrice}"></td>
-      <td th:text="${item.isSold}"></td>
-    </tr>
-      
-  </tbody>
-</table>
-
-
-
-
-<table>
-  <thead>
-    <tr>
-      <th>Offer ID</th>
-      <th>User ID</th>
-      <th>Auction ID</th>
-      <th>Offer Amount</th>
-      <th>Offer Date</th>
-      
-      
-    </tr>
-  </thead>
-  <tbody>
-   
-     <tr th:each="o: ${offers}">
-      <td th:text="${o.offerID}"></td>
-      <td th:text="${o.userID}"></td>
-      <td th:text="${o.aucID}"></td>
-      <td th:text="${o.offerPrice}"></td>
-      <td th:text="${o.offerDayTime}"></td>
-    </tr>
-      
-  </tbody>
-</table>
-
-
-
-<form action="#" method="get" th:action="@{/GiveOffer}">
-<input type="hidden" name="auctionID" th:value="${auction.aucID}">
-    <label for="offerInput">Enter your offer:</label>
-    <input type="number" id="offerInput" name="offer" required>
-    <input type="submit" value="Submit">
-    <span th:if="${errorMessage != null}" th:text="${errorMessage}" class="error-message"></span>
-</form>
-<!-- <form action="#" method="get" th:action="@{/GiveOffer}">
-    <input type="hidden" name="auctionID" th:value="${auction.aucID}">
-    <label for="offerInput">Enter your offer:</label>
-    <input type="number" id="offerInput" name="offer" required>
-    <p th:if="${errorMsg != null}" th:text="${errorMsg}" style="color: red;"></p>
-    <input type="submit" value="Submit">
-</form> -->
-
-
-<h2>My Won Auctions</h2>
-<table>
-    <thead>
-        <tr>
+    <div class="container">
+        <h1>Items details</h1>
+        <a th:href="@{/Home}">Back to home</a>
+        <br>
+        <a th:href="@{/BuyPage}">Back to BuyPage</a>
+        
+        <!-- Show item details of this Auction -->
+        <table>
+        <thead>
+            <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Item Description</th>
+            <th>Starting Price</th>
+            <th>Item Image</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            <tr th:each="item : ${items}">
+            <td th:text="${item.itemID}"></td>
+            <td th:text="${item.itemName}"></td>
+            <td th:text="${item.description}"></td>
+            <td th:text="${item.itemPrice}"></td>
+            <td><img  th:src="@{${item.imagePath}}" width="80" height="65"></td>
+            </tr>
+            
+        </tbody>
+        </table>
+        
+        <table>
+        <thead>
+            <tr>
+            <th>Offer ID</th>
+            <th>User ID</th>
+            <th>Auction ID</th>
+            <th>Offer Amount</th>
+            <th>Offer Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            <tr th:each="o: ${offers}">
+            <td th:text="${o.offerID}"></td>
+            <td th:text="${o.userID}"></td>
+            <td th:text="${o.aucID}"></td>
+            <td th:text="${o.offerPrice}"></td>
+            <td th:text="${o.offerDayTime}"></td>
+            </tr>
+            
+        </tbody>
+        </table>
+        
+        <form action="#" method="get" th:action="@{/GiveOffer}">
+        <input type="hidden" name="auctionID" th:value="${auction.aucID}">
+            <label for="offerInput">Enter your offer:</label>
+            <input type="number" id="offerInput" name="offer" required>
+            <input type="submit" value="Submit">
+            <span th:if="${errorMessage != null}" th:text="${errorMessage}" class="error-message"></span>
+        </form>
+        
+        <h2>My Won Auctions</h2>
+        <table>
+        <thead>
+            <tr>
             <th>Auction ID</th>
             <th>Auction Price</th>
             <th>Final Price</th>
             <th>Expiry Date Time</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="wonAuction : ${wonAuctions}">
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="wonAuction : ${wonAuctions}">
             <td th:text="${wonAuction.aucID}"></td>
             <td th:text="${wonAuction.aucPrice}"></td>
             <td th:text="${wonAuction.winningBid}"></td>
             <td th:text="${auction.expiryDateTime}"></td>
-        </tr>
-    </tbody>
-</table>
-
-
-
-
+            </tr>
+        </tbody>
+        </table>
+    </div>
 </body>
 </html>

@@ -3,16 +3,19 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Login page</title>
+<link rel="stylesheet" type="text/css" href="./css/Login.css">
 </head>
+
 <body>
-	<h1>Welcome to the Auction Online</h1>
+    <div class="container">
+        <h1>Welcome to the Auction Online</h1>
 
-	<form action="Login" method="POST">
-		Username: <input type="text" name="username" required> <br>
-		Password: <input type="password" name="password" required><br>
-		<input type="submit" value="login">
-		<p th:text=" ${errorMsg}"></p>
-	</form>
-
+        <form action="Login" method="POST">
+            Username: <input type="text" name="username" required> <br>
+            Password: <input type="password" name="password" required><br>
+            <input type="submit" value="login">
+            <p th:text="${errorMsg}"></p>
+        </form>
+    </div>
 </body>
 </html>

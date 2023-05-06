@@ -3,20 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <title>Auction Details</title>
+<link rel="stylesheet" href="./css/AuctionDetails.css" th:href="@{/css/AuctionDetails.css}"/>
 </head>
 <body>
+<div class="container">
 	<h1>Auction details</h1>
 	<a th:href="@{/Home}">Back to home</a>
 	<br>
 	<a th:href="@{/SellPage}">Back to SellPage</a>
 	
-	
-	
-<!-- Show item details of this Auction -->
-	<p><b>Auction ID <span th:text = "${auction.aucID}"></span></b></p>
-	<p><b>Owner ID: <span th:text = "${auction.ownerID}"></span></b></p>
+	<!-- Show item details of this Auction -->
+	<div class="auction-info">
+		<p><b>Auction ID: <span th:text = "${auction.aucID}"></span></b></p>
+		<p><b>Owner ID: <span th:text = "${auction.ownerID}"></span></b></p>
+	</div>
 	<p><b>Items:</b></p>
-	<table border = "1">
+	<table>
 		<thead>
 			<tr>
 				<th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Image</th>
@@ -32,10 +34,12 @@
 			</tr>
 		</tbody>
 	</table>
-	<p><b>Starting Price: <span th:text = ${auction.aucPrice}></span></b></p>
-	<p><b>Minimum Raise: <span th:text = "${auction.minUP}"></span></b></p>
-	<p><b>Expiry Date Time: <span th:text = "${auction.expiryDateTime}"></span></b></p>
-	<p><b>Closed: <span th:text = "${auction.isClosed}"></span></b></p>
+	<div class="auction-info">
+		<p><b>Starting Price: <span th:text = ${auction.aucPrice}></span></b></p>
+		<p><b>Minimum Raise: <span th:text = "${auction.minUP}"></span></b></p>
+		<p><b>Expiry Date Time: <span th:text = "${auction.expiryDateTime}"></span></b></p>
+		<p><b>Closed: <span th:text = "${auction.isClosed}"></span></b></p>
+	</div>
 	<h2>List of Offers:</h2>
 	<table>
   		<thead>
@@ -54,13 +58,14 @@
   		</tbody>
 	</table>
 	
-<!-- Close the current Auction if it is not already closed -->
-<div th:if="${canClose}">
-	<p>Time is up, you can choose to close this Auction</p>
-	<form th:action="@{/CloseAuction}"method="GET">
-  		<input type="hidden" name="auctionID" th:value="${auction.aucID}" />
-  		<button type="submit">Close</button>
-	</form>
+	<!-- Close the current Auction if it is not already closed -->
+	<div th:if="${canClose}">
+		<p>Time is up, you can choose to close this Auction</p>
+		<form th:action="@{/CloseAuction}"method="GET">
+	  		<input type="hidden" name="auctionID" th:value="${auction.aucID}" />
+	  		<button type="submit">Close</button>
+		</form>
+	</div>
 </div>
 </body>
 </html>

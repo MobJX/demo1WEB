@@ -1,0 +1,83 @@
+@charset "UTF-8";
+/* OfferDetails.css */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+h1, h2 {
+    font-size: 24px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #3c5f73;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #35424a;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f4f4f4;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label, input[type="number"] {
+    display: inline-block;
+}
+
+input[type="submit"] {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #35424a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #3c5f73;
+}
+
+.error-message {
+    color: red;
+    margin-left: 10px;
+}
