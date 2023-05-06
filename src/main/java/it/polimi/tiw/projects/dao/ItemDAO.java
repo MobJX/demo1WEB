@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,9 +88,9 @@ public class ItemDAO {
 	}
 	
 	
-	public void createItem (Item item) throws SQLException {
+	public int createItem (Item item) throws SQLException {
 		
-		try(PreparedStatement pstatement = con.prepareStatement(INSERT_ITEM_SQL);){
+		try(PreparedStatement pstatement = con.prepareStatement(INSERT_ITEM_SQL, Statement.RETURN_GENERATED_KEYS);){
 			//pstatement.setInt(1, id); itemID autogenerato da DB
 			pstatement.setString(1, item.getItemName());
 			pstatement.setString(2, item.getDescription());
@@ -97,7 +98,13 @@ public class ItemDAO {
 			pstatement.setBoolean(4, item.isSold());
 			pstatement.setString(5, item.getImagePath());
 			pstatement.executeUpdate();
-			
+			try (ResultSet generatedKeys = pstatement.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                return generatedKeys.getInt(1);
+	            } else {
+	                throw new SQLException("Creating auction failed");
+	            }
+	        }
 		}
 	}
 	

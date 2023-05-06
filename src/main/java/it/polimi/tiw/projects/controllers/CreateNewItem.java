@@ -76,10 +76,13 @@ public class CreateNewItem extends HttpServlet {
 				}
 				
 				Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage);
+			
 				System.out.println("----------Create a new Item SERVLET---------");
 				ItemDAO itemDAO = new ItemDAO(connection);
 				try {
-					itemDAO.createItem(item);
+					int newItemID = itemDAO.createItem(item);
+					item.setItemID(newItemID);
+					System.out.println("ItemID: " + newItemID);
 					
 				} catch (SQLException e){
 					e.printStackTrace();
