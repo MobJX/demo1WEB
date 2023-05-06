@@ -65,9 +65,56 @@ public class GiveOffer extends HttpServlet {
         float userBid = Float.parseFloat(request.getParameter("offer"));
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        
+        
+        
+      //find all info of auction tha won by the user
+		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+		List<WonAuction> wonAuctions = new ArrayList<>();
+		
+		try {
+			wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+        
+        
+        
+        
 
         // 创建AuctionDAO
         AuctionDAO auctionDAO = new AuctionDAO(connection);
+        
+        
+        // regenerate info of items!
+        // show the items info 
+        ItemDAO itemDAO = new ItemDAO(connection);
+		Item item = null;
+		List<Integer> allItemID = new ArrayList<Integer>();
+		List<Item> itemsOfAuction = new ArrayList<Item>();
+		
+		try {
+			allItemID = itemDAO.findAll_ItemID_OfAuction(auctionId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for	(int i = 0; i < allItemID.size();i++) {
+			//item = new Item();
+			try {
+				item = itemDAO.findItem(allItemID.get(i));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			itemsOfAuction.add(item);
+			}
+		
+        
+        
 
         // 获取Auction和当前最高出价
         Auction auction = null;
@@ -78,13 +125,40 @@ public class GiveOffer extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        
+        
+        
         //获取minUP
         //检查是否符合！
         float minUp = auction.getMinUP();
         if (userBid <= currentMaxBid + minUp) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Your bid must be greater than current highest offer plus the minimum increase.");
+            // 不符合出价要求，返回给用户重新输入出价的机会
+        	OfferDAO offerDAO = new OfferDAO(connection);
+        	List<Offer> Oldoffers = null;
+        	try {
+				Oldoffers = offerDAO.findAllOfferOfAuction(auction);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+            String path = "/WEB-INF/OfferDetails.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("auction", auction);
+            ctx.setVariable("errorMessage", "Your bid must be greater than current highest offer plus the minimum increase.");
+            ctx.setVariable("wonAuctions", wonAuctions);
+            ctx.setVariable("items", itemsOfAuction);
+            ctx.setVariable("offers", Oldoffers);
+            templateEngine.process(path, ctx, response.getWriter());
             return;
         }
+        /*
+        float minUp = auction.getMinUP();
+        if (userBid <= currentMaxBid + minUp) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Your bid must be greater than current highest offer plus the minimum increase.");
+            return;
+        }*/
         
         
      // 创建OfferDAO
@@ -115,44 +189,10 @@ public class GiveOffer extends HttpServlet {
         }
 
         
-        // regenerate info of items!
-        // show the items info 
-        ItemDAO itemDAO = new ItemDAO(connection);
-		Item item = null;
-		List<Integer> allItemID = new ArrayList<Integer>();
-		List<Item> itemsOfAuction = new ArrayList<Item>();
-		
-		try {
-			allItemID = itemDAO.findAll_ItemID_OfAuction(auctionId);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for	(int i = 0; i < allItemID.size();i++) {
-			//item = new Item();
-			try {
-				item = itemDAO.findItem(allItemID.get(i));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			itemsOfAuction.add(item);
-			}
-		
+      
 		
         
-		//find all info of auction tha won by the user
-				WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
-				List<WonAuction> wonAuctions = new ArrayList<>();
-				
-				try {
-					wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
+		
         
 
         
