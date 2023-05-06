@@ -89,7 +89,6 @@ public class CreateNewItem extends HttpServlet {
 				String path = "/WEB-INF/NewItem.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-				response.getWriter().println("<p><b>Added successfully!</b></p>");
 				ctx.setVariable("item", item);
 				templateEngine.process(path, ctx, response.getWriter());
 				
