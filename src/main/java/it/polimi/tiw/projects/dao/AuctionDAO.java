@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,7 +103,13 @@ public class AuctionDAO {
 	}
 	*/
 
-	public void createAuction(Auction auction)throws SQLException{
+	
+	/**
+	 * @param auction
+	 * @return aucID
+	 * */
+	/*
+	public int createAuction(Auction auction)throws SQLException{
 		
 		//String query = "INSERT into Auction (aucID?,ownerID,aucPrice,minUP,deadLineDay,deadLineTime,isClosed)"	+ "VALURS(?,?,?,?,?,?,?)";
 		
@@ -114,11 +121,37 @@ public class AuctionDAO {
 			pstatement.setBoolean(5, auction.isClosed());
 			pstatement.executeUpdate();
 			
+			try(ResultSet generatedKeys = pstatement.getGeneratedKeys()){
+				if(generatedKeys.next()) {
+					return generatedKeys.getInt(1);
+				} else {
+					throw new SQLException("Creating auction failed");
+				}
+			}
 		}
 		
 	}
-	
-	
+	*/
+	public int createAuction(Auction auction) throws SQLException {
+
+	    try (PreparedStatement pstatement = con.prepareStatement(INSERT_AUCTION_SQL, Statement.RETURN_GENERATED_KEYS)) {
+	        pstatement.setInt(1, auction.getOwnerID());
+	        pstatement.setFloat(2, auction.getAucPrice());
+	        pstatement.setFloat(3, auction.getMinUP());
+	        pstatement.setTimestamp(4, new Timestamp(auction.getExpiryDateTime().getTime()));
+	        pstatement.setBoolean(5, auction.isClosed());
+	        pstatement.executeUpdate();
+
+	        try (ResultSet generatedKeys = pstatement.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                return generatedKeys.getInt(1);
+	            } else {
+	                throw new SQLException("Creating auction failed");
+	            }
+	        }
+	    }
+
+	}
 	
 			
 	

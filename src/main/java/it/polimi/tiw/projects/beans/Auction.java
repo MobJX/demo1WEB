@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Auction {
 	
-	private int aucID = 0;
+	private int aucID;
 	private int ownerID;
 	private float aucPrice;
 	private float minUP;
@@ -30,7 +30,6 @@ public class Auction {
 		this.expiryDateTime = expiryDateTime;
 		this.isClosed = false;
 		this.aucItems = new ArrayList<>();
-		this.aucID++;
 		this.maxOffer = 0;
 		this.remaingTimes = null;
 		this.bidder = null;

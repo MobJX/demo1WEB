@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: myastadb
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,8 +27,8 @@ CREATE TABLE `auc_item` (
   `itemID` int NOT NULL,
   PRIMARY KEY (`aucID`,`itemID`),
   KEY `itemID` (`itemID`),
-  CONSTRAINT `auc_item_ibfk_1` FOREIGN KEY (`itemID`) REFERENCES `item` (`itemID`),
-  CONSTRAINT `auc_item_ibfk_2` FOREIGN KEY (`aucID`) REFERENCES `auction` (`aucID`)
+  CONSTRAINT `auc_item_ibfk_1` FOREIGN KEY (`itemID`) REFERENCES `item` (`itemID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `auc_item_ibfk_2` FOREIGN KEY (`aucID`) REFERENCES `auction` (`aucID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -38,7 +38,7 @@ CREATE TABLE `auc_item` (
 
 LOCK TABLES `auc_item` WRITE;
 /*!40000 ALTER TABLE `auc_item` DISABLE KEYS */;
-INSERT INTO `auc_item` VALUES (1,1),(2,2),(3,3);
+INSERT INTO `auc_item` VALUES (1,1),(2,2),(3,3),(4,4),(6,5),(1,6),(5,15),(6,16),(17,18);
 /*!40000 ALTER TABLE `auc_item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `auction` (
   PRIMARY KEY (`aucID`),
   KEY `ownerID` (`ownerID`),
   CONSTRAINT `auction_ibfk_1` FOREIGN KEY (`ownerID`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `auction` (
 
 LOCK TABLES `auction` WRITE;
 /*!40000 ALTER TABLE `auction` DISABLE KEYS */;
-INSERT INTO `auction` VALUES (1,1,1000.00,100.00,'2023-07-27 20:30:00',0),(2,1,200.00,20.00,'2023-05-27 14:30:00',0),(3,2,900.00,50.00,'2023-05-24 14:30:00',1);
+INSERT INTO `auction` VALUES (1,1,1000.00,100.00,'2023-07-27 20:30:00',0),(2,1,200.00,20.00,'2023-05-27 14:30:00',0),(3,2,900.00,50.00,'2023-05-24 14:30:00',1),(4,2,2599.00,20.00,'2023-05-28 17:43:00',0),(5,2,849.99,60.00,'2023-05-06 00:09:00',1),(6,2,1649.99,50.00,'2023-05-09 00:38:00',0),(17,2,1199.99,60.00,'2023-05-06 01:21:00',0);
 /*!40000 ALTER TABLE `auction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,7 @@ CREATE TABLE `item` (
   `isSold` tinyint(1) NOT NULL,
   `imagePath` varchar(255) NOT NULL,
   PRIMARY KEY (`itemID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,'iphone14 promax','ottimi condizioni',1000.00,0,'dont know'),(2,'airPods pro','ottimi condizioni',200.00,0,'dont know'),(3,'matebook14','good condition',900.00,1,'dont know');
+INSERT INTO `item` VALUES (1,'Iphone14 Promax','ottimi condizioni',1000.00,0,'https://cdn.dxomark.com/wp-content/uploads/medias/post-125428/Apple-iPhone-14-Pro-Max_FINAL_featured-image-packshot-review-1.jpg'),(2,'AirPods Pro','ottimi condizioni',200.00,0,'https://m.media-amazon.com/images/I/71zny7BTRlL._AC_SX522_.jpg'),(3,'Matebook14','good condition',900.00,1,'https://m.media-amazon.com/images/I/517g9MKFW+S._AC_SS450_.jpg'),(4,'Alienware m18','good condition',2599.00,0,'https://i.dell.com/sites/csimages/Product_Imagery/all/prod-2585-notebook-alienware-m18-ff-800x550.png'),(5,'iPad Pro 12.9','Very good condition',1299.99,0,'https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_98708055/fee_786_587_png'),(6,'Nokia X30 5G','good condition',350.00,0,'https://www.inside-digital.de/img/X30.png'),(15,'SAMSUNG Galaxy S22','good condition',499.99,0,'https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_96461586/fee_786_587_png'),(16,'iPhone 12','ottimi condition',350.00,0,'https://d1eh9yux7w8iql.cloudfront.net/product_images/None_59a7092b-f2c4-40b9-9000-7987ecc6cd26.jpg'),(17,'Bag','ottimi condition',15.00,0,'https://i.imgur.com/ZNH22BT.jpeg'),(18,'HONOR Magic5 Pro','good condition',1199.99,0,'https://img02.honorfile.com/eu/it/honor/pms/product/6936520822584/428_428_F2647CAEEA7236E9D4F2BA4CBA2AC74264D747BCD6BFBD92mp.png');
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-04 22:21:39
+-- Dump completed on 2023-05-06 23:23:18

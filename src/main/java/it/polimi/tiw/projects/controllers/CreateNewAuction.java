@@ -105,7 +105,9 @@ public class CreateNewAuction extends HttpServlet{
 			auction = new Auction(user.getId(),totalPrice,Integer.parseInt(minUP),expiryDateTime);
 			
 			//update auction SQL
-			auctionDAO.createAuction(auction);
+			//auctionDAO.createAuction(auction);
+			int newAucID = auctionDAO.createAuction(auction);
+			auction.setAucID(newAucID);
 			
 			// return a list of item in this auction to NewAuction
 			aucitems = itemDAO.findAll_Item_OfAuction(auction.getAucID());
@@ -114,7 +116,9 @@ public class CreateNewAuction extends HttpServlet{
 			// update auc_item SQL
 			for (String itemId : selectedItems) {
 			    Item item = itemDAO.findItem(Integer.parseInt(itemId));
+			    System.out.println("INTERNO AUCID: " + auction.getAucID());
 			    itemDAO.insertItemInAuction(auction, item);
+			    
 			}
 
 			
