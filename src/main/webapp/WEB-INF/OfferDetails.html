@@ -65,13 +65,20 @@
 </table>
 
 
-
 <form action="#" method="get" th:action="@{/GiveOffer}">
+    <input type="hidden" name="auctionID" th:value="${auction.aucID}">
+    <label for="offerInput">Enter your offer:</label>
+    <input type="number" id="offerInput" name="offer" required>
+    <p th:if="${errorMsg != null}" th:text="${errorMsg}" style="color: red;"></p>
+    <input type="submit" value="Submit">
+</form>
+
+<!-- <form action="#" method="get" th:action="@{/GiveOffer}">
 <input type="hidden" name="auctionID" th:value="${auction.aucID}">
     <label for="offerInput">Enter your offer:</label>
     <input type="number" id="offerInput" name="offer" required>
     <input type="submit" value="Submit">
-</form>
+</form> -->
 
 
 <h2>My Won Auctions</h2>
