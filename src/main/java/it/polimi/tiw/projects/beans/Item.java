@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Item {
 	
-	private int itemID = 0;
+	private int itemID;
 	private String itemName;
 	private String description;
 	private float itemPrice;
@@ -25,7 +25,6 @@ public class Item {
 		this.itemPrice = itemPrice;
 		this.imagePath = imagePath;
 		this.isSold = false;
-		this.itemID++;
 	}
 
 	public int getItemID() {

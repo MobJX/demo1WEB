@@ -7,23 +7,6 @@
 <body>
 	<h1>Auction ID <span th:text = "${auction.aucID}"></span> Created Successfully</h1>
 	<h2>Owner ID: <span th:text = "${auction.ownerID}"></span></h2>
-	<h2>Items:</h2>
-	<table border = "1">
-		<thead>
-			<tr>
-				<th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Image</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each = "item : ${aucItems}">
-				<td th:text="${item.itemID}"></td>
-				<td th:text="${item.itemName}"></td>
-				<td th:text="${item.description}"></td>
-				<td th:text="${item.itemPrice}"></td>
-				<td><img  th:src="@{${item.imagePath}}" width="80" height="65"></td>
-			</tr>
-		</tbody>
-	</table>
 	<h2>Starting Price: <span th:text = ${auction.aucPrice}></span></h2>
 	<h2>Minimum Raise: <span th:text = "${auction.minUP}"></span></h2>
 	<h2>Expiry Date Time: <span th:text = "${auction.expiryDateTime}"></span></h2>
