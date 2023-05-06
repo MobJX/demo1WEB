@@ -80,10 +80,10 @@ public class GiveOffer extends HttpServlet {
         }
         //获取minUP
         //检查是否符合！
-        String errorMsg = null;
         float minUp = auction.getMinUP();
         if (userBid <= currentMaxBid + minUp) {
-        	errorMsg = "Your bid must be greater than current highest offer plus the minimum increase.";
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Your bid must be greater than current highest offer plus the minimum increase.");
+            return;
         }
         
         
@@ -168,7 +168,6 @@ public class GiveOffer extends HttpServlet {
         ctx.setVariable("offers", offers);
        ctx.setVariable("items", itemsOfAuction);
        ctx.setVariable("wonAuctions", wonAuctions);
-       ctx.setVariable("errorMsg", errorMsg);
         
 		templateEngine.process(path, ctx, response.getWriter());
 		
