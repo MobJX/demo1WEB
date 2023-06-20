@@ -3,6 +3,9 @@ package it.polimi.tiw.projects.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,7 @@ import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.dao.OfferDAO;
+import it.polimi.tiw.projects.dao.UserDAO;
 import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
@@ -74,13 +78,85 @@ public class CloseAuction extends HttpServlet {
         }
 
     	
-		// Redirect to the SellPage 
-		String path = "/WEB-INF/Sell.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        
-		templateEngine.process(path, ctx, response.getWriter());
+		List<Item> items = null;
+		//List<Auction> auctionClosed = null;
+		//List<Auction> auctionOpen = null;
+		ItemDAO itemDAO = new ItemDAO(connection);
+		//AuctionDAO auctionDAO = new AuctionDAO(connection);
+		try {
+			items = itemDAO.findAll_Item_Not_In_Auctioned();
+		//	auctionClosed = auctionDAO.findAllAuctionOFF(user);
+		//	auctionOpen = auctionDAO.findAllAuctionON(user.getId());
+		//	
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return;
+		}
 		
+		List<Auction> aucON = new ArrayList<>();
+		List<Item> itemsON = new ArrayList<>();
+		List<Offer> offers = new ArrayList<>();
+		float maxOffer = 0;
+		Duration remaingTimes = null;
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime expiry;
+		
+		
+		List<Auction> aucOFF = new ArrayList<>();
+		User bidder = null;
+
+		UserDAO userDAO = new UserDAO(connection);
+		OfferDAO offerDAO = new OfferDAO(connection);
+		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+		
+		try {
+			// Open Auctions
+			aucON = auctionDAO.findAllAuctionON(user.getId());
+			for	(Auction auc : aucON) {
+				maxOffer = 0;
+				itemsON = itemDAO.findAll_Item_OfAuction(auc.getAucID());
+				offers = offerDAO.findAllOfferOfAuction(auc);
+				for (Offer offer : offers) {
+					if (offer.getOfferPrice()>maxOffer) {
+						maxOffer = offer.getOfferPrice();
+					}
+				}
+				expiry = auc.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+				remaingTimes = Duration.between(now, expiry);
+				auc.setRemaingTimes(remaingTimes);
+				auc.setMaxOffer(maxOffer);
+				auc.setAucItems(itemsON);
+			}
+			
+			// Closed Auctions
+			aucOFF = auctionDAO.findAllAuctionOFF(user);
+		
+			
+			for	(Auction auc : aucOFF) {
+				maxOffer = 0;
+				offers = offerDAO.findAllOfferOfAuction(auc);
+				for (Offer offer : offers) {
+					if (offer.getOfferPrice()>maxOffer) {
+						maxOffer = offer.getOfferPrice();
+					}
+				}
+				bidder = userDAO.findUserOfAuction(auc);
+				auc.setBidder(bidder);
+				auc.setMaxOffer(maxOffer);
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		// Redirect to the SellPage and add missions to the parameters
+				String path = "/WEB-INF/Sell.html";
+				ServletContext servletContext = getServletContext();
+				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+				ctx.setVariable("aucItems", items);
+				ctx.setVariable("aucON", aucON);
+				ctx.setVariable("aucOFF", aucOFF);
+				templateEngine.process(path, ctx, response.getWriter());
     }
     
     
