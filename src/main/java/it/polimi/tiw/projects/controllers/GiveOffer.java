@@ -61,13 +61,22 @@ public class GiveOffer extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // 获取请求参数
-        int auctionId = Integer.parseInt(request.getParameter("auctionID"));
-        float userBid = Float.parseFloat(request.getParameter("offer"));
+        int auctionId;
+		float userBid;
+		try {
+			auctionId = Integer.parseInt(request.getParameter("auctionID"));
+			userBid = Float.parseFloat(request.getParameter("offer"));
+		} catch (NumberFormatException | NullPointerException e) {
+			// only for debugging e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			return;
+		}
+        
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         
         
-        
+ //■■■■■■■■■■■■■■■■■■■■■ regenerate info needed ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
       //find all info of auction tha won by the user
 		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
 		List<WonAuction> wonAuctions = new ArrayList<>();
@@ -79,16 +88,7 @@ public class GiveOffer extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		
-        
-        
-        
-        
-
-        // 创建AuctionDAO
         AuctionDAO auctionDAO = new AuctionDAO(connection);
-        
-        
         // regenerate info of items!
         // show the items info 
         ItemDAO itemDAO = new ItemDAO(connection);
@@ -113,10 +113,10 @@ public class GiveOffer extends HttpServlet {
 			itemsOfAuction.add(item);
 			}
 		
-        
-        
-
+    
+//■■■■■■■■■■■■■■■ New Offer ■■■■■■■■■■■■■■■■■■■■■
         // 获取Auction和当前最高出价
+		//getting the max offer of the auction
         Auction auction = null;
         float currentMaxBid = 0;
         try {
@@ -126,13 +126,15 @@ public class GiveOffer extends HttpServlet {
             e.printStackTrace();
         }
         
-        
-        
         //获取minUP
+        //getting minUP
         //检查是否符合！
+        //checking the validation of offer 
         float minUp = auction.getMinUP();
+        
         if (userBid <= currentMaxBid + minUp) {
             // 不符合出价要求，返回给用户重新输入出价的机会
+        	//if the validation failed then let the user give another offer 
         	OfferDAO offerDAO = new OfferDAO(connection);
         	List<Offer> Oldoffers = null;
         	try {
@@ -188,28 +190,20 @@ public class GiveOffer extends HttpServlet {
             e.printStackTrace();
         }
 
-        
-      
-		
-        
-		
-        
-
-        
-
     	
-		// Redirect to the OfferDetail page and 重新渲染页面
+		// Redirect to the OfferDetail page and  regenerate page重新渲染页面
 		String path = "/WEB-INF/OfferDetails.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 	   // ctx.setVariable("currentMaxBid", currentMaxBid);
 		// 添加更新后的拍卖和报价信息到上下文中
-        ctx.setVariable("auction", auction);
-        ctx.setVariable("offers", offers);
+		//adding updated info 
+       ctx.setVariable("auction", auction);
+       ctx.setVariable("offers", offers);
        ctx.setVariable("items", itemsOfAuction);
        ctx.setVariable("wonAuctions", wonAuctions);
-        
-		templateEngine.process(path, ctx, response.getWriter());
+       ctx.setVariable("minUP", auction.getMinUP());
+       templateEngine.process(path, ctx, response.getWriter());
 		
     }
     

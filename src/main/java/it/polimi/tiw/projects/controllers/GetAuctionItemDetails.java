@@ -152,6 +152,7 @@ public class GetAuctionItemDetails extends HttpServlet {
 		ctx.setVariable("items", itemsOfAuction);
 		ctx.setVariable("offers", offers);
 		ctx.setVariable("wonAuctions", wonAuctions);
+		ctx.setVariable("minUP", auction.getMinUP());
 		
 		templateEngine.process(path, ctx, response.getWriter());
 		

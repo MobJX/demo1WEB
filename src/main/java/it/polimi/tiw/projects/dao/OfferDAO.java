@@ -72,23 +72,7 @@ public class OfferDAO {
 		
 	}
 	
-	/*
-	public void createOffer(int offerID, int userID, int aucID, float offerPrice ,Time time ,Date date ) throws SQLException { 
-		
-		try(PreparedStatement pstatement = con.prepareStatement(INSERT_OFFER_SQL);){
-			
-			pstatement.setInt(1, userID);
-			pstatement.setInt(2, aucID);
-			pstatement.setFloat(3, offerPrice);
-			pstatement.setTime(4, time);
-			pstatement.setDate(5, date);
-			pstatement.executeUpdate();
-		}
-		
-		
-	}
-	
-	*/
+
 	
 	/**
 	 * find all the offers of specific auction
@@ -118,5 +102,28 @@ public class OfferDAO {
 		
 		return offers;
 	}
+	public List<Offer> findAllOfferOfAuctionByAucId(int auctionID) throws SQLException{
+		List<Offer> offers = new ArrayList<Offer>();
+		
+		try(PreparedStatement pstatement = con.prepareStatement(SELECT_OFFER_BY_AUCID);){
+			pstatement.setInt(1, auctionID);
+			try(ResultSet result = pstatement.executeQuery();){
+				while(result.next()) {
+					Offer offer = new Offer();
+					offer.setOfferID(result.getInt("offerID"));
+					offer.setUserID(result.getInt("userID"));
+					offer.setAucID(result.getInt("aucID"));
+					offer.setOfferPrice(result.getFloat("offerPrice"));
+					offer.setOfferDayTime(result.getTimestamp("offerDayTime"));
+					//adding offer to list
+					offers.add(offer);
+					
+				}
+			}
+		}
+		
+		return offers;
+	}
+	
 
 }

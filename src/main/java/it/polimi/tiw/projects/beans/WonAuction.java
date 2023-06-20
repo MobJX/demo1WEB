@@ -1,6 +1,5 @@
 package it.polimi.tiw.projects.beans;
 
-import java.util.Date;
 
 public class WonAuction extends Auction {
     private float winningBid = 0;

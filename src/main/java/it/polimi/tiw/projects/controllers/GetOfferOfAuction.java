@@ -79,6 +79,10 @@ public class GetOfferOfAuction extends HttpServlet {
 		try {
 			//verify that auction exists or not
 			auction = auctionDAO.findAuction(aucID);
+			if(auction == null) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+				return;
+			}
 			//System.out.println("This is auctionID :"+auction.getAucID());
 			
 			
@@ -94,11 +98,11 @@ public class GetOfferOfAuction extends HttpServlet {
 		
 		
 		
-		// Redirect to the OfferDetail page and add auction to the parameters
+		// Redirect to the OfferDetail page 
 		String path = "/WEB-INF/OfferDetails.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-	//	ctx.setVariable("offers", offers);
+		ctx.setVariable("offers", offers);
 		templateEngine.process(path, ctx, response.getWriter());
 		
 		

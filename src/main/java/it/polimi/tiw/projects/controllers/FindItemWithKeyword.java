@@ -93,6 +93,10 @@ public class FindItemWithKeyword extends HttpServlet{
 			//so now using AuctionDAO's method public List<Auction> findAllAuctionWithItemID
 			try {
 				auctions = auctionDAO.findAllAuctionWithItemID(itemsID);
+				if(auctions == null) {
+					response.sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+					return;
+				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
