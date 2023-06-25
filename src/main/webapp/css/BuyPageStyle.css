@@ -55,9 +55,7 @@ a {
     color: #3c5f73;
 }
 
-a:hover {
-    text-decoration: underline;
-}
+
 
 table {
     width: 100%;
@@ -79,7 +77,5 @@ table tr:nth-child(even) {
     background-color: #f4f4f4;
 }
 
-table tr:hover {
-    background-color: #f1f1f1;
-}
+
 
