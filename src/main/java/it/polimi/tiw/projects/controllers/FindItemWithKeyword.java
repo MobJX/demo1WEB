@@ -22,8 +22,11 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
+import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
+import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 @WebServlet("/FindItemWithKeyword")
@@ -61,6 +64,7 @@ public class FindItemWithKeyword extends HttpServlet{
 			response.sendRedirect(loginpath);
 			return;
 		}
+		 User user = (User) session.getAttribute("user");
 		
 		// get and check params
 		String keyword = null;
@@ -102,6 +106,30 @@ public class FindItemWithKeyword extends HttpServlet{
 				e.printStackTrace();
 			}
 			
+			//find all info of auction tha won by the user
+			WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+			List<WonAuction> wonAuctions = new ArrayList<>();
+			
+			try {
+				wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<Item> items = null;
+			
+			try {
+				for (Auction auc : wonAuctions) {
+					items = itemDAO.findAll_Item_OfAuction(auc.getAucID());
+					auc.setAucItems(items);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return;
+			}
+
+			
+			
 			
 			// Redirect to the buy page and add auction to the parameters
 			String path = "/WEB-INF/Buy.html";
@@ -109,6 +137,7 @@ public class FindItemWithKeyword extends HttpServlet{
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			//ctx.setVariable("KeywordItems", items);
 			ctx.setVariable("KeywordAuctions", auctions);
+			ctx.setVariable("wonAuctions", wonAuctions);
 			//System.out.println("this is ItemID "+items.get(0).getItemID());
 			//System.out.println("this is AuctionTime"+auctions.get(0).getExpiryDateTime());
 			//System.out.println("this is AuctionID "+auctions.get(0).getAucID()); FOR DEBUGGING

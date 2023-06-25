@@ -69,25 +69,7 @@
             <span th:if="${errorMessage != null}" th:text="${errorMessage}" class="error-message"></span>
         </form>
         
-        <h2>My Won Auctions</h2>
-        <table>
-        <thead>
-            <tr>
-            <th>Auction ID</th>
-            <th>Auction Price</th>
-            <th>Final Price</th>
-            <th>Expiry Date Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="wonAuction : ${wonAuctions}">
-            <td th:text="${wonAuction.aucID}"></td>
-            <td th:text="${wonAuction.aucPrice}"></td>
-            <td th:text="${wonAuction.winningBid}"></td>
-            <td th:text="${auction.expiryDateTime}"></td>
-            </tr>
-        </tbody>
-        </table>
+        
     </div>
 </body>
 </html>

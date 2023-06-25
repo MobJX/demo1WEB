@@ -6,46 +6,91 @@
 <link rel="stylesheet" type="text/css" href="./css/BuyPageStyle.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Let's BUY BUY BUY !!!</h1>
-        <a th:href="@{/Home}">Back to home</a>
-        <br><br>
-        <!-- 通过KEYWORD搜索物品 -->
-        <!-- 使用form 来建立一个表格 action指定表单会发送给哪个servlet-->
-        <!-- 使用get 将关键字作为查询字符参数附加到URL上 -->
-        <form action="FindItemWithKeyword" method="GET">
-            <label for="search">Search Item!:</label>
-            <!-- 建立输入框 -->
-            <input type="text" id="keyword" name="keyword" required>
-            <!-- 使用一个按钮来确认 -->
-            <button type="submit">confirm</button>
-        </form>
+	<div class="container">
+		<h1>Let's BUY BUY BUY !!!</h1>
+		<a th:href="@{/Home}">Back to home</a> <br> <br>
+		<!-- 通过KEYWORD搜索物品 -->
+		<!-- 使用form 来建立一个表格 action指定表单会发送给哪个servlet-->
+		<!-- 使用get 将关键字作为查询字符参数附加到URL上 -->
+		<form action="FindItemWithKeyword" method="GET">
+			<label for="search">Search Item!:</label>
+			<!-- 建立输入框 -->
+			<input type="text" id="keyword" name="keyword" required>
+			<!-- 使用一个按钮来确认 -->
+			<button type="submit">confirm</button>
+		</form>
 
-        <form method="post" action="Logout">
-            <button type="submit">Logout</button>
-        </form>
+		<form method="post" action="Logout">
+			<button type="submit">Logout</button>
+		</form>
 
-        <h1>Auction details</h1>
-        <div th:if="${KeywordAuctions.size() >0}">
-            <table>
-                <thead>
-                    <tr>
-                        <td>AuctionID</td><td>OwnerID </td> <td>Price </td><td>MinUp </td> <td>ExpiryDayTime</td> <td>IsClosedStatus</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="m : ${KeywordAuctions}">
-                        <td th:text="${m.aucID}"></td>
-                        <td th:text="${m.ownerID}"></td>
-                        <td th:text="${m.aucPrice}"></td>
-                        <td th:text="${m.minUP}"></td>
-                        <td th:text="${m.expiryDateTime}"></td>
-                        <td th:text="${m.isClosed}"></td>
-                        <td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>  
-    </div>
+		<h1>My Won Auctions</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>Auction ID</th>
+					<th>Items Name and Price</th>
+					<th>Auction Price</th>
+					<th>Final Price</th>
+					<th>Expiry Date Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="wonAuction : ${wonAuctions}">
+					<td th:text="${wonAuction.aucID}"></td>
+					<td>
+						<table>
+							<tbody>
+								<tr th:each="item: ${wonAuction.aucItems}">
+									<td th:text="${item.itemName}"
+										style="border: 1px solid black; padding: 5px;"></td>
+									<td th:text="${item.itemPrice}"
+										style="border: 1px solid black; padding: 5px;"></td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+					<td th:text="${wonAuction.aucPrice}"></td>
+					<td th:text="${wonAuction.winningBid}"></td>
+					<td th:text="${wonAuction.expiryDateTime}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+
+
+		<h1>Auction details</h1>
+		<div th:if="${KeywordAuctions.size() >0}">
+			<table>
+				<thead>
+					<tr>
+						<td>AuctionID</td>
+						<td>OwnerID</td>
+						<td>Price</td>
+						<td>MinUp</td>
+						<td>ExpiryDayTime</td>
+						<td>IsClosedStatus</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="m : ${KeywordAuctions}">
+						<td th:text="${m.aucID}"></td>
+						<td th:text="${m.ownerID}"></td>
+						<td th:text="${m.aucPrice}"></td>
+						<td th:text="${m.minUP}"></td>
+						<td th:text="${m.expiryDateTime}"></td>
+						<td th:text="${m.isClosed}"></td>
+						<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+
+
+	</div>
+
 </body>
 </html>

@@ -3,6 +3,9 @@ package it.polimi.tiw.projects.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +22,13 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.beans.Auction;
+import it.polimi.tiw.projects.beans.Item;
 
+import it.polimi.tiw.projects.beans.User;
+import it.polimi.tiw.projects.beans.WonAuction;
+import it.polimi.tiw.projects.dao.ItemDAO;
+import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 @WebServlet("/BuyPage")
@@ -53,13 +61,36 @@ public class GoToBuyPage extends HttpServlet {
 			return;
 		}
 		User user = (User) session.getAttribute("user");
-	
+		// find all info of auction tha won by the user
+		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
+		List<WonAuction> wonAuctions = new ArrayList<>();
+		List<Item> items = null;
+		ItemDAO itemDAO = new ItemDAO(connection);
+		
 
-		// Redirect to the Buypage and add missions to the parameters
+		try {
+			wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			for (Auction auc : wonAuctions) {
+				items = itemDAO.findAll_Item_OfAuction(auc.getAucID());
+				auc.setAucItems(items);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		// Redirect to the Buypage
 		String path = "/WEB-INF/Buy.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		
+		ctx.setVariable("wonAuctions", wonAuctions);
+
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
