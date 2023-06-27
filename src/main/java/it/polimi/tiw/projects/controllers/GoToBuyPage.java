@@ -7,6 +7,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -66,6 +68,9 @@ public class GoToBuyPage extends HttpServlet {
 		List<WonAuction> wonAuctions = new ArrayList<>();
 		List<Item> items = null;
 		ItemDAO itemDAO = new ItemDAO(connection);
+		Duration remaingTimes = null;
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime expiry;
 		
 
 		try {
@@ -79,11 +84,25 @@ public class GoToBuyPage extends HttpServlet {
 			for (Auction auc : wonAuctions) {
 				items = itemDAO.findAll_Item_OfAuction(auc.getAucID());
 				auc.setAucItems(items);
+				expiry = auc.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+				remaingTimes = Duration.between(now, expiry);
+				auc.setRemaingTimes(remaingTimes);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return;
 		}
+		Collections.sort(wonAuctions, new Comparator<Auction>() {
+		    @Override
+		    public int compare(Auction auc1, Auction auc2) {
+		        LocalDateTime expiry1 = auc1.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		        LocalDateTime expiry2 = auc2.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		        
+		        // 按照结束日期从大到小排序，将最远的日期放在头部
+		        //from big to small
+		        return expiry2.compareTo(expiry1);
+		    }
+		});
 
 		// Redirect to the Buypage
 		String path = "/WEB-INF/Buy.html";

@@ -33,6 +33,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 @WebServlet("/SellPage")
 public class GoToSellPage extends HttpServlet {
@@ -143,6 +145,18 @@ public class GoToSellPage extends HttpServlet {
 			e.printStackTrace();
 			return;
 		}
+		//sort the list base on End Time which further date auction will be positioned on the top of list
+		Collections.sort(aucON, new Comparator<Auction>() {
+		    @Override
+		    public int compare(Auction auc1, Auction auc2) {
+		        LocalDateTime expiry1 = auc1.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		        LocalDateTime expiry2 = auc2.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		        
+		        // From small to Big
+		        //Increase
+		        return expiry1.compareTo(expiry2);
+		    }
+		});
 
 		// Redirect to the SellPage and add missions to the parameters
 				String path = "/WEB-INF/Sell.html";

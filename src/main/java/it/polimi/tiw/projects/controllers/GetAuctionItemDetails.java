@@ -125,24 +125,7 @@ public class GetAuctionItemDetails extends HttpServlet {
 		}
 		
 		
-		
-		//find all info of auction tha won by the user
-		WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
-		List<WonAuction> wonAuctions = new ArrayList<>();
-		
-		try {
-			wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	
-		
-		
-		
-		
+
 		// Redirect to the OfferDetail page and add auction to the parameters
 		String path = "/WEB-INF/OfferDetails.html";
 		ServletContext servletContext = getServletContext();
@@ -151,7 +134,6 @@ public class GetAuctionItemDetails extends HttpServlet {
 		//ctx.setVariable("auctionID", aucID);
 		ctx.setVariable("items", itemsOfAuction);
 		ctx.setVariable("offers", offers);
-		ctx.setVariable("wonAuctions", wonAuctions);
 		ctx.setVariable("minUP", auction.getMinUP());
 		
 		templateEngine.process(path, ctx, response.getWriter());

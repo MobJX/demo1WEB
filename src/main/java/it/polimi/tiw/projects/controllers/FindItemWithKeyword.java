@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -81,6 +86,9 @@ public class FindItemWithKeyword extends HttpServlet{
 		//List<Item> items =  null;
 		List<Integer> itemsID = null;
 		List<Auction> auctions = null;
+		Duration remaingTimes = null;
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime expiry;
 		
 			try {
 				//items = itemDAO.findItemWithKeyWord(keyword);
@@ -106,27 +114,67 @@ public class FindItemWithKeyword extends HttpServlet{
 				e.printStackTrace();
 			}
 			
+			for(Auction auc : auctions) {
+				expiry = auc.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+				remaingTimes = Duration.between(now, expiry);
+				auc.setRemaingTimes(remaingTimes);
+				
+			}
+			Collections.sort(auctions, new Comparator<Auction>() {
+			    @Override
+			    public int compare(Auction auc1, Auction auc2) {
+			        LocalDateTime expiry1 = auc1.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			        LocalDateTime expiry2 = auc2.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			        
+			        // 按照结束日期从大到小排序，将最远的日期放在头部
+			        //from big to small
+			        return expiry2.compareTo(expiry1);
+			    }
+			});
+			
+			
+			
+			
+			
+			
 			//find all info of auction tha won by the user
+			// find all info of auction tha won by the user
 			WonAuctionDAO wonAuctionDAO = new WonAuctionDAO(connection);
 			List<WonAuction> wonAuctions = new ArrayList<>();
+			List<Item> items = null;
 			
+			
+
 			try {
 				wonAuctions = wonAuctionDAO.findAllAuctionsWonByUser(user.getId());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			List<Item> items = null;
-			
+
 			try {
 				for (Auction auc : wonAuctions) {
 					items = itemDAO.findAll_Item_OfAuction(auc.getAucID());
 					auc.setAucItems(items);
+					expiry = auc.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+					remaingTimes = Duration.between(now, expiry);
+					auc.setRemaingTimes(remaingTimes);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return;
 			}
+			Collections.sort(wonAuctions, new Comparator<Auction>() {
+			    @Override
+			    public int compare(Auction auc1, Auction auc2) {
+			        LocalDateTime expiry1 = auc1.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			        LocalDateTime expiry2 = auc2.getExpiryDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+			        
+			        // 按照结束日期从大到小排序，将最远的日期放在头部
+			        //from big to small
+			        return expiry2.compareTo(expiry1);
+			    }
+			});
 
 			
 			
@@ -135,12 +183,9 @@ public class FindItemWithKeyword extends HttpServlet{
 			String path = "/WEB-INF/Buy.html";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			//ctx.setVariable("KeywordItems", items);
 			ctx.setVariable("KeywordAuctions", auctions);
 			ctx.setVariable("wonAuctions", wonAuctions);
-			//System.out.println("this is ItemID "+items.get(0).getItemID());
-			//System.out.println("this is AuctionTime"+auctions.get(0).getExpiryDateTime());
-			//System.out.println("this is AuctionID "+auctions.get(0).getAucID()); FOR DEBUGGING
+			
 			
 			templateEngine.process(path, ctx, response.getWriter());
 		

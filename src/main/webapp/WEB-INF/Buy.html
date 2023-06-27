@@ -32,7 +32,7 @@
 					<th>Items Name and Price</th>
 					<th>Auction Price</th>
 					<th>Final Price</th>
-					<th>Expiry Date Time</th>
+					<th>Remaining Time</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -52,7 +52,12 @@
 					</td>
 					<td th:text="${wonAuction.aucPrice}"></td>
 					<td th:text="${wonAuction.winningBid}"></td>
-					<td th:text="${wonAuction.expiryDateTime}"></td>
+					<td
+						th:text="${wonAuction.remaingTimes.toDays()} + ' Days  ' +
+							${wonAuction.remaingTimes.toHoursPart()} + ':' +
+							${wonAuction.remaingTimes.toMinutesPart()} + ':' +
+							${wonAuction.remaingTimes.toSecondsPart()}">
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -69,7 +74,7 @@
 						<td>OwnerID</td>
 						<td>Price</td>
 						<td>MinUp</td>
-						<td>ExpiryDayTime</td>
+						<td>Remaining Time</td>
 						<td>IsClosedStatus</td>
 					</tr>
 				</thead>
@@ -79,7 +84,12 @@
 						<td th:text="${m.ownerID}"></td>
 						<td th:text="${m.aucPrice}"></td>
 						<td th:text="${m.minUP}"></td>
-						<td th:text="${m.expiryDateTime}"></td>
+						<td
+							th:text="${m.remaingTimes.toDays()} + ' Days  ' +
+							${m.remaingTimes.toHoursPart()} + ':' +
+							${m.remaingTimes.toMinutesPart()} + ':' +
+							${m.remaingTimes.toSecondsPart()}">
+						</td>
 						<td th:text="${m.isClosed}"></td>
 						<td><a th:href="@{/GetAuctionItemDetails(aucID=${m.aucID})}">Details</a></td>
 					</tr>
