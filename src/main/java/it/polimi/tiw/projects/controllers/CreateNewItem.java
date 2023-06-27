@@ -58,7 +58,7 @@ public class CreateNewItem extends HttpServlet {
 				
 		        
 				System.out.println("----------Create a new Item SERVLET---------");
-
+				boolean isBadRequest = false;
 				String itemName = null;
 				String itemPrice = null;
 				String itemDescription = null;
@@ -66,24 +66,39 @@ public class CreateNewItem extends HttpServlet {
 				
 				try {
 					itemName = request.getParameter("itemName");
+					if	(itemName.length()>=44) {
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Name too long!");
+						return;
+					}
 					itemPrice = request.getParameter("itemPrice");
 					itemDescription = request.getParameter("itemDescription");
 					 itemImage = request.getParameter("itemImage");
+					 
+					 isBadRequest = itemName.isEmpty() || itemPrice.isEmpty() || itemDescription.isEmpty() || itemImage.isEmpty();
 					} catch ( NullPointerException e) {
 					// only for debugging e.printStackTrace();
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 					return;
 				}
 				
-				Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage);
+				if (isBadRequest) {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect or missing param values");
+					return;
+				}
+				
+				if (itemPrice == null || !isValidFloat(itemPrice)) {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid itemPrice value");
+					return;
+				}
+				
+				Item item = new Item(itemName, itemDescription, Float.parseFloat(itemPrice), itemImage, user.getId());
 			
 				System.out.println("----------Create a new Item SERVLET---------");
 				ItemDAO itemDAO = new ItemDAO(connection);
 				try {
 					int newItemID = itemDAO.createItem(item);
 					item.setItemID(newItemID);
-					System.out.println("ItemID: " + newItemID);
-					
+
 				} catch (SQLException e){
 					e.printStackTrace();
 				}
@@ -95,6 +110,15 @@ public class CreateNewItem extends HttpServlet {
 				ctx.setVariable("item", item);
 				templateEngine.process(path, ctx, response.getWriter());
 				
+	}
+	
+	private boolean isValidFloat(String value) {
+		try {
+			Float.parseFloat(value);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

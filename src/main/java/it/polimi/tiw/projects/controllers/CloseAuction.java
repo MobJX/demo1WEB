@@ -26,7 +26,6 @@ import it.polimi.tiw.projects.beans.Auction;
 import it.polimi.tiw.projects.beans.Item;
 import it.polimi.tiw.projects.beans.Offer;
 import it.polimi.tiw.projects.beans.User;
-import it.polimi.tiw.projects.beans.WonAuction;
 import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.ItemDAO;
 import it.polimi.tiw.projects.dao.OfferDAO;
@@ -35,6 +34,7 @@ import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
 @WebServlet("/CloseAuction")
+
 public class CloseAuction extends HttpServlet {
     
     
@@ -69,7 +69,11 @@ public class CloseAuction extends HttpServlet {
 
         try {
             auction = auctionDAO.findAuction(auctionId);
-            
+            if (auction == null) {
+				response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+				response.getWriter().println("Auction not found");
+				return;
+			}
             // update SQL
             auction.setClosed(auctionDAO.closeAuction(auction));
             
@@ -79,15 +83,9 @@ public class CloseAuction extends HttpServlet {
 
     	
 		List<Item> items = null;
-		//List<Auction> auctionClosed = null;
-		//List<Auction> auctionOpen = null;
 		ItemDAO itemDAO = new ItemDAO(connection);
-		//AuctionDAO auctionDAO = new AuctionDAO(connection);
 		try {
 			items = itemDAO.findAll_Item_Not_In_Auctioned();
-		//	auctionClosed = auctionDAO.findAllAuctionOFF(user);
-		//	auctionOpen = auctionDAO.findAllAuctionON(user.getId());
-		//	
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return;

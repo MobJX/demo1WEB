@@ -67,12 +67,18 @@ public class GoToSellPage extends HttpServlet {
 
 		
 		List<Item> items = null;
+		List<Item> useritems = new ArrayList<>();
 		//List<Auction> auctionClosed = null;
 		//List<Auction> auctionOpen = null;
 		ItemDAO itemDAO = new ItemDAO(connection);
 		//AuctionDAO auctionDAO = new AuctionDAO(connection);
 		try {
 			items = itemDAO.findAll_Item_Not_In_Auctioned();
+			for(Item item: items) {
+				if	(item.getCreatorID() == user.getId()) {
+					useritems.add(item);
+				}
+			}
 		//	auctionClosed = auctionDAO.findAllAuctionOFF(user);
 		//	auctionOpen = auctionDAO.findAllAuctionON(user.getId());
 		//	
@@ -142,7 +148,7 @@ public class GoToSellPage extends HttpServlet {
 				String path = "/WEB-INF/Sell.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-				ctx.setVariable("aucItems", items);
+				ctx.setVariable("aucItems", useritems);
 				ctx.setVariable("aucON", aucON);
 				ctx.setVariable("aucOFF", aucOFF);
 				templateEngine.process(path, ctx, response.getWriter());
