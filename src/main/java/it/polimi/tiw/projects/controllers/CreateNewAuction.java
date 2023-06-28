@@ -66,13 +66,13 @@ public class CreateNewAuction extends HttpServlet{
 		}
 		User user = (User) session.getAttribute("user");
 		
-		System.out.println("----------Create a new Auc Item SERVLET---------");
 		
 		String[] selectedItems = null;
 		String expiryDateTimeStr = null;
 		String minUP = null;
 		Date expiryDateTime = null;
 		
+		//getting parameters 
 		try {
 			selectedItems = request.getParameterValues("selectedItems");
 			expiryDateTimeStr = request.getParameter("expiryDateTime");
@@ -83,7 +83,7 @@ public class CreateNewAuction extends HttpServlet{
 			return;
 		}
 		
-
+		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime localDateTime = LocalDateTime.parse(expiryDateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		expiryDateTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());

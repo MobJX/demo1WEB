@@ -87,7 +87,6 @@ public class GetAuctionItemDetails extends HttpServlet {
 		Item item = null;
 		List<Integer> allItemID = new ArrayList<Integer>();
 		List<Item> itemsOfAuction = new ArrayList<Item>();
-		
 		OfferDAO offerDAO = new OfferDAO(connection);
 		List<Offer> offers = null;
 		

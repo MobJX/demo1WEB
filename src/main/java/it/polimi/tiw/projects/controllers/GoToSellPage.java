@@ -68,12 +68,10 @@ public class GoToSellPage extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 
 		
+		//find all available items for creation of Auction
 		List<Item> items = null;
 		List<Item> useritems = new ArrayList<>();
-		//List<Auction> auctionClosed = null;
-		//List<Auction> auctionOpen = null;
 		ItemDAO itemDAO = new ItemDAO(connection);
-		//AuctionDAO auctionDAO = new AuctionDAO(connection);
 		try {
 			items = itemDAO.findAll_Item_Not_In_Auctioned();
 			for(Item item: items) {
@@ -81,9 +79,7 @@ public class GoToSellPage extends HttpServlet {
 					useritems.add(item);
 				}
 			}
-		//	auctionClosed = auctionDAO.findAllAuctionOFF(user);
-		//	auctionOpen = auctionDAO.findAllAuctionON(user.getId());
-		//	
+		
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return;
