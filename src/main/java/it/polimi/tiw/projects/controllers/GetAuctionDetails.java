@@ -90,7 +90,6 @@ public class GetAuctionDetails extends HttpServlet {
 		Auction auction = null;
 		
 		List<Item> items = null;
-		List<Item> useritems = new ArrayList<>();
 		ItemDAO itemDAO = new ItemDAO(connection);
 
 		OfferDAO offerDAO = new OfferDAO(connection);
@@ -110,13 +109,12 @@ public class GetAuctionDetails extends HttpServlet {
 			System.out.println("Founded auction " + auction.getAucID());
 			//find all of item in this auction 
 			items = itemDAO.findAll_Item_OfAuction(auction.getAucID());
-
-			for(Item item: items) {
-				if	(item.getCreatorID() == user.getId()) {
-					useritems.add(item);
-				}
+			if(items != null) {
+				System.out.println("this is getAuctionDetails");
 			}
-			auction.setAucItems(useritems);
+
+			
+			auction.setAucItems(items);
 			
 			offers = offerDAO.findAllOfferOfAuction(auction);
 			
