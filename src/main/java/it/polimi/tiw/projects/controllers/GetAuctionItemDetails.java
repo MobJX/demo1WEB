@@ -76,7 +76,9 @@ public class GetAuctionItemDetails extends HttpServlet {
 			
 		} catch (NumberFormatException | NullPointerException e) {
 			// only for debugging e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			//if user insert bad request in URL we will send them back to login page!!!
+			response.sendRedirect(loginpath);
+//			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
 			return;
 		}
 

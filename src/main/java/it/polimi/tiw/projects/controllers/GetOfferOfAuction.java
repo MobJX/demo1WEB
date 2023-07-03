@@ -2,6 +2,7 @@ package it.polimi.tiw.projects.controllers;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -65,8 +66,14 @@ public class GetOfferOfAuction extends HttpServlet {
 			aucID = Integer.parseInt(request.getParameter("aucID"));
 			
 		} catch (NumberFormatException | NullPointerException e) {
+			System.out.println("hello this is auction details page error");
+			response.sendRedirect(loginpath);
 			// only for debugging e.printStackTrace();
+	
+			
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			
+			
 			return;
 		}
 		

@@ -80,7 +80,8 @@ public class GetAuctionDetails extends HttpServlet {
 			aucID = Integer.parseInt(request.getParameter("aucID"));
 		} catch (NumberFormatException | NullPointerException e) {
 			// only for debugging e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+//			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param values");
+			response.sendRedirect(loginpath);
 			return;
 		}
 		

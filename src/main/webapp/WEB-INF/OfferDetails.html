@@ -61,7 +61,7 @@
         </tbody>
         </table>
         
-        <form action="#" method="get" th:action="@{/GiveOffer}">
+        <form action="#" method="POST" th:action="@{/GiveOffer}">
         <input type="hidden" name="auctionID" th:value="${auction.aucID}">
             <label for="offerInput">Enter your offer:</label>
             <input type="number" id="offerInput" name="offer" required>
