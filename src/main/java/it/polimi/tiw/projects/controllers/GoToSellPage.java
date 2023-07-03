@@ -12,6 +12,7 @@ import it.polimi.tiw.projects.dao.AuctionDAO;
 import it.polimi.tiw.projects.dao.WonAuctionDAO;
 import it.polimi.tiw.projects.utils.ConnectionHandler;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -162,6 +163,8 @@ public class GoToSellPage extends HttpServlet {
 				ctx.setVariable("aucON", aucON);
 				ctx.setVariable("aucOFF", aucOFF);
 				templateEngine.process(path, ctx, response.getWriter());
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/CreateNewAuction");
+				dispatcher.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

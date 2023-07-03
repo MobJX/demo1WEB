@@ -29,6 +29,7 @@
 <p>List of available items:</p>
 <p><i>Please select the item you wish to auction</i></p>
 <form action = "CreateNewAuction" method = "GET">
+<span th:if="${errorMessage != null}" th:text="${errorMessage}" class="error-message"></span>
 	<table border='1'>
 		<thead>
 			<tr>
@@ -42,7 +43,7 @@
 				<td th:text="${auc.description}"></td>
 				<td th:text="${auc.itemPrice}"></td>
 				<td><img  th:src="@{${auc.imagePath}}" width="200" height="235"></td>
-				<td><input type="checkbox" th:field = "*{selectedItems}" th:value = "${auc.itemID}" name="selectedItems" required></td>
+				<td><input type="checkbox" th:field = "*{selectedItems}" th:value = "${auc.itemID}" name="selectedItems" ></td>
 			</tr>
 			<tr>
 				<td colspan = "6">
