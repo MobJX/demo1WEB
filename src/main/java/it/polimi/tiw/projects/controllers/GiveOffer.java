@@ -58,7 +58,7 @@ public class GiveOffer extends HttpServlet {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // 获取请求参数
         int auctionId;
@@ -208,10 +208,10 @@ public class GiveOffer extends HttpServlet {
     }
     
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		doGet(request, response);
-	}
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//			throws ServletException, IOException {
+//		doPost(request, response);
+//	}
     
     
     
