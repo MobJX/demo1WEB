@@ -72,8 +72,8 @@ public class CreateNewAuction extends HttpServlet {
 
 		selectedItems = request.getParameterValues("selectedItems");
 		if (selectedItems == null) {
-		    Object dataValue = request.getAttribute("aucItems");
-		    request.setAttribute("aucItems", dataValue);
+		    Object aucItems = request.getAttribute("aucItems");
+		    request.setAttribute("aucItems", aucItems);
 		    request.setAttribute("errorMessage", "You must select at least one item!");
 
 		    RequestDispatcher dispatcher = request.getRequestDispatcher("/SellPage");

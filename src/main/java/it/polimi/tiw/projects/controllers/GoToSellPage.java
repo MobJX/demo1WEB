@@ -163,8 +163,6 @@ public class GoToSellPage extends HttpServlet {
 				ctx.setVariable("aucON", aucON);
 				ctx.setVariable("aucOFF", aucOFF);
 				templateEngine.process(path, ctx, response.getWriter());
-				RequestDispatcher dispatcher = request.getRequestDispatcher("/CreateNewAuction");
-				dispatcher.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
