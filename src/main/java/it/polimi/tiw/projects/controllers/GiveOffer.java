@@ -132,7 +132,7 @@ public class GiveOffer extends HttpServlet {
         //checking the validation of offer 
         float minUp = auction.getMinUP();
         
-        if (userBid <= currentMaxBid + minUp) {
+        if (userBid <= currentMaxBid + minUp||userBid <= auction.getAucPrice()+minUp) {
             // 不符合出价要求，返回给用户重新输入出价的机会
         	//if the validation failed then let the user give another offer 
         	OfferDAO offerDAO = new OfferDAO(connection);
